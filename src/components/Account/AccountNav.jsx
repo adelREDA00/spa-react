@@ -2,8 +2,8 @@ import React from "react";
 import { useLocation, Link, NavLink, useParams } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
 import { FaRegBookmark } from "react-icons/fa";
-import { PiBuildings } from "react-icons/pi";
 import { IoCalendarNumberOutline } from "react-icons/io5";
+import { TbHomeEdit } from "react-icons/tb";
 
 function AccountNav() {
     const { pathname } = useLocation();
@@ -14,9 +14,9 @@ function AccountNav() {
     }
 
     function linkClasses(type = null) {
-        let classes = "nav-btn-main flex justify-center md:flex md:flex-row items-center gap-1 py-3 px-4 rounded-full"
+        let classes = "nav-btn-main flex justify-center md:flex md:flex-row items-center gap-1 py-3 px-4 "
         if (type === subpage) {
-            classes += " nav-btn text-white rounded-full"
+            classes += " nav-btn text-white "
         }
 
         return classes
@@ -42,7 +42,7 @@ function AccountNav() {
                 className={linkClasses('places')}
                 to={"/account/places"}
             >
-                <PiBuildings size={20} />
+                <TbHomeEdit size={20} />
                 Suite
             </Link>
 

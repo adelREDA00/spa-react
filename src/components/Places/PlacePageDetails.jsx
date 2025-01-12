@@ -48,18 +48,18 @@ function PlacePageDetails({ place }) {
                 </div>
 
                 <div className="mt-6 periodes">
-                <h3 > <strong className="fornow" ><MdNightlightRound className="Icon-DayNight" /> Nuit</strong> </h3>
-                    <p>Arrivée: 19:00</p>
-                    <p>Départ: 11:00</p>
+                <h3 > <strong className="fornow" ><MdNightlightRound className="Icon-DayNightClient" /> Nuit</strong> </h3>
+                    <p>Arrivée : 19:00</p>
+                    <p>Départ : 11:00</p>
                     <p  >Tarif week-end: <span className=" title-2" >180 €</span> </p>
                     <p>Tarif semaine: <span className=" title-2" >220 €</span> </p>
                     
                 </div>
 
                 <div className="mt-6 periodes">
-                    <h3 > <strong className="fornow">  <IoIosSunny className="Icon-DayNight" />  Après-midi</strong> </h3>
-                    <p>Arrivée: 13:00</p>
-                    <p>Départ: 17:00</p>
+                    <h3 > <strong className="fornow">  <IoIosSunny className="Icon-DayNightClient" />  Après-midi</strong> </h3>
+                    <p>Arrivée : 13:00</p>
+                    <p>Départ : 17:00</p>
                     <p  >Tarif week-end: <span className=" title-2" >120 €</span> </p>
                     <p>Tarif semaine: <span className=" title-2" >90 €</span> </p>
                     
@@ -103,7 +103,7 @@ function PlacePageDetails({ place }) {
                         boxes.map(box => (
 
 
-                            <div key={box._id} className="bg-gray-100 menu-card hover:card  border rounded-2xl ">
+                            <div key={box._id} className="bg-gray-100 menu-card hover:card  border  ">
                                 <div>
                                     <div  className="title-wrapper">
                                         {/* <h3 className="title-3">

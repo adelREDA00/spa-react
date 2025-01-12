@@ -7,9 +7,9 @@ function Sucess() {
 
     <div className={`modal__container show-modal`} id="modal-container">
         <div className="modal__content ">
-            <div className="modal__close close-modal"  >
+            {/* <div className="modal__close close-modal"  >
                 <IoMdClose size={20} />
-            </div>
+            </div> */}
             <div className="SuccCard">
                 {/* <button className="dismiss" type="button">×</button>  */}
                 <div className="header">

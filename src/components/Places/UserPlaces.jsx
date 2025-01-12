@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AccountNav from "../Account/AccountNav";
 import { Link } from "react-router-dom";
 import * as api from "../../api/requester";
+import { TbHomePlus } from "react-icons/tb";
 
 const URL_TO_UPLOADS =
     process.env.NODE_ENV === "development"
@@ -30,9 +31,10 @@ function Places() {
             <div className="flex items-center justify-center mt-12">
                 <Link
                     to={"/account/places/new"}
-                    className="nav-btn-add text-white rounded-full py-3 px-5"
+                    className="nav-btn-add text-white  py-3 px-5"
                 >
-                    Ajouter une suite
+                    <TbHomePlus size={24} />
+
                 </Link>
             </div>
             <div className="mt-12 mb-12">
@@ -41,7 +43,7 @@ function Places() {
                         <Link
                             to={`/account/places/${place._id}`}
                             key={place._id}
-                            className="flex flex-col md:flex-row gap-4 mt-4 bg-gray-100 hover:shadow-md shadow-black transition duration-300 ease-in-out rounded-2xl p-4"
+                            className="flex flex-col md:flex-row gap-4 mt-4 bg-gray-100 hover:shadow-md shadow-black transition duration-300 ease-in-out  p-4"
                         >
                             <div className="flex max-w-full h-46 md:max-w-[320px] md:h-44 bg-gray-300 shrink-0">
                                 <img

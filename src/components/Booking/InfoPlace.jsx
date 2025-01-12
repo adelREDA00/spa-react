@@ -13,42 +13,42 @@ function InfoPlace() {
             {/* <p >  Nos Règles pour un Séjour Agréable</p> */}
               
               
-                <div className="bg-gray-100 rounded-xl text-sm md:text-base px-2 md:px-6 py-4 mt-2">
+                <div className="bg-gray-100  text-sm md:text-base px-2 md:px-6 py-4 mt-2">
                     <h3 className=" mb-2 sou-title">
-                    <HiOutlineDocumentText />   Obligations
+                    <HiOutlineDocumentText size={20} />   Obligations
                     </h3>
                     <div className="mt-4">
 
-                    <p className="text-gray-500 text-base">
+                    <p className="text-base">
                             2 PERSONNES MAXIMUM (OBLIGATOIREMENT MAJEURS)
                         </p>
 
                     </div>
                     <div className="mt-4">
-                    <p className="text-gray-500 text-base">
+                    <p className=" text-base">
                        RESPECT DES HEURES ARRIVEES/DEPARTS
                         </p>
                     </div>
                     <div className="mt-4">
-                    <p className="text-gray-500 text-base">
+                    <p className=" text-base">
                        RESTITUTION DES CLÉS LE JOUR DU DEPART
                         </p>
                     </div>
                     <div className="mt-4">
-                    <p className="text-gray-500 text-base">
+                    <p className=" text-base">
                        EFFECTUER LA VAISSELLE
 
 
                         </p>
                     </div>
                     <div className="mt-4">
-                    <p className="text-gray-500 text-base">
+                    <p className=" text-base">
                        JETER LES POUBELLES
                         </p>
                     </div>
 
                     <div className="mt-4">
-                    <p className="text-gray-500 text-base">
+                    <p className="text-base">
                        RESPECT DE L'ENSEMBLE DES DISPOSITIFS DE L'APPARTEMENT
 
 
@@ -57,9 +57,9 @@ function InfoPlace() {
                 </div>
                 <br />
 
-                <div className="bg-gray-100 rounded-xl text-sm md:text-base px-2 md:px-6 py-4 mt-2">
+                <div className="bg-gray-100  text-sm md:text-base px-2 md:px-6 py-4 mt-2">
                     <h3 className="mb-2 sou-title">
-                    <MdOutlineNotInterested />
+                    <MdOutlineNotInterested size={20} />
                     Interdictions
                     </h3>
                     <div className="flex flex-row items-center text-gray-500">
@@ -75,31 +75,31 @@ function InfoPlace() {
                     </div>
                     <div className="mt-4">
 
-                        <p className="text-gray-500 text-base">
+                        <p className="text-base">
                             CONSOMMATION DANS LE SAUNA
                         </p>
                     </div>
                     <div className="mt-4">
 
-                        <p className="text-gray-500 text-base">
+                        <p className="text-base">
                             ANIMAL DE COMPAGNIE
                         </p>
                     </div>
                     <div className="mt-4">
 
-                        <p className="text-gray-500 text-base">
+                        <p className="text-base">
                             FÊTES ET ÉVÉNEMENTS
                         </p>
                     </div>
                     <div className="mt-4">
 
-                        <p className="text-gray-500 text-base">
+                        <p className="text-base">
                             FUMER
                         </p>
                     </div>
                     <div className="mt-4">
 
-                        <p className="text-gray-500 text-base">
+                        <p className="text-base">
                             MANIPULER LES DISPOSITIFS : DÉTECTEUR DE FUMEE, DÉTECTEUR DE MOUVEMENT, ALARME...
 
                             ENTRAINERA UNE DEDUCTION IMMEDIATE DE 60 SUR LA CAUTION
@@ -107,7 +107,7 @@ function InfoPlace() {
                     </div>
                     <div className="mt-4">
 
-                        <p className="text-gray-500 text-base">
+                        <p className="text-base">
                             DEGRADER OU REPARTIR AVEC LA DECORATION MISE A DISPOSITION (UN INVENTAIRE SERA EFFECTUE AVANT ET APRES CHAQUE PASSAGE)
                         </p>
                     </div>

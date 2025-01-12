@@ -57,12 +57,12 @@ function Login() {
                     Connexion
                     </button>
                 </form>
-                <div className="text-center mt-4">
+                {/* <div className="text-center mt-4">
                 Vous n'avez pas de compte ?{" "}
                     <Link className="font-semibold underline" to={"/register"}>
                     S'inscrire
                     </Link>
-                </div>
+                </div> */}
             </div>
         </div>
     );

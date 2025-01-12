@@ -59,6 +59,59 @@ function Form({ stripePromise }) {
   }, [placeId]);
 
 
+  // Function to customize day content red & yellow dots 
+  function customDayContent(day) {
+    let extraDot = null;
+    const formattedDate = format(day, "yyyy-MM-dd");
+    const bookingsForDay = bookedSlots[formattedDate];
+  
+    if (bookingsForDay) {
+      // Extract all time slots for the current date
+      const timeSlots = bookingsForDay.map(booking => booking.timeSlot);
+  
+      if (timeSlots.includes("Nuit") && timeSlots.includes("Après-midi")) {
+        // Fully booked (both slots booked)
+        extraDot = (
+          <div
+            style={{
+              height: "5px",
+              width: "5px",
+              borderRadius: "100%",
+              background: "red",
+              position: "absolute",
+              top: 2,
+              right: 2,
+            }}
+          />
+        );
+      } else {
+        // Partially booked (one of the slots booked)
+        extraDot = (
+          <div
+            style={{
+              height: "5px",
+              width: "5px",
+              borderRadius: "100%",
+              background: "#FFD700", // Yellow-Gold
+              position: "absolute",
+              top: 2,
+              right: 2,
+            }}
+          />
+        );
+      }
+    }
+  
+    return (
+      <div>
+        {extraDot}
+        <span>{format(day, "d")}</span>
+      </div>
+    );
+  }
+  
+
+
 
 
 
@@ -271,8 +324,7 @@ function Form({ stripePromise }) {
       day: '2-digit',
     });
 
-    console.log("start", ranges.selection.startDate);
-    console.log("selectedDate", selectedDate);
+   
 
     // 4. Check available time slots for the selected date
     if (bookedSlots[selectedDate]) {
@@ -341,7 +393,7 @@ function Form({ stripePromise }) {
 
     try {
       const response = await api.bookPlace(placeId, data);
-      console.log(response);
+      
       if (response && response._id) {
         console.log("Place booked successfully!");
         // Handle successful booking
@@ -549,7 +601,7 @@ function Form({ stripePromise }) {
               <form className="active" id="form" >
                 <h3 className="main__title">Choisissez la Date et l'Heure</h3>
                 <p className="description">
-                  Le prix change selon si le jour choisi est en semaine ou en week-end
+                  rouge = complet , jaune = partiellement réservé.
                 </p>
                 <ul className="list">
                   <li className="list__item clndrContainer">
@@ -565,6 +617,7 @@ function Form({ stripePromise }) {
                       //!! BUG  IT ALWAYS DISPABEL THE PREV DATE
                       // disabledDates={disabledDates}
                       locale={fr} // Set the locale to French
+                      dayContentRenderer={customDayContent} // Use custom day content
                     />
                   </li>
 
@@ -577,7 +630,7 @@ function Form({ stripePromise }) {
                         availableOptions.map((plan, index) => (
                           <div
                             key={index}
-                            className={`plan__card card ${selectedPlan.name === plan ? 'selected' : ''}`}
+                            className={`plan__card card borderCard ${selectedPlan.name === plan ? 'selected' : ''}`}
                             onClick={() =>
                               handlePlanSelect({
                                 name: plan,

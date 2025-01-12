@@ -11,6 +11,7 @@ import Modal from "../modal/Modal";
 import { IoAdd } from "react-icons/io5";
 import Periode from "./Periode";
 import SuccModal from "../modal/SuccModal";
+import { IoIosArrowBack } from "react-icons/io";
 
 
 function AddPlaces() {
@@ -262,16 +263,38 @@ function AddPlaces() {
         // }
     }
 
-    async function removePlace(ev) {
-        ev.preventDefault();
 
+
+    const [showDelModal, setShowDelModal] = useState(false);
+    
+    
+      // Remove booking function
+      const removeSuite = async () => {
         try {
             await api.deletePlace(id);
             navigate("/account/places");
         } catch (error) {
             console.log(error);
         }
-    }
+      };
+
+      // Handle Delete Button Click
+      const handleDeleteClick = (ev) => {
+        ev.preventDefault();
+        setShowDelModal(true); // Open modal
+      };
+    
+        // Handle confirmation to delete the booking
+        const handleConfirmDelete = async () => {
+          await removeSuite(); // Delete the booking
+          setShowDelModal(false); // Close modal after delete
+        };
+      
+        // Handle cancel delete
+        const handleCancelDelete = () => {
+            setShowDelModal(false); // Close modal
+        };
+    
 
     const inputHeader = (text) => (
         <h2 className="text-2xl font-semibold mt-8">{text}</h2>
@@ -498,7 +521,7 @@ function AddPlaces() {
                         </div>
                     )}
 
-                    <Periode
+                    {/* <Periode
                         period={period}
                         setPeriod={setPeriod}
                         weekdayPrice={weekdayPrice}
@@ -510,7 +533,7 @@ function AddPlaces() {
                         checkOutTime={checkOutTime}
                         setCheckOutTime={setCheckOutTime}
                         handleOptionCreate={handleOptionCreate}
-                    />
+                    /> */}
 
                     {/* SUCC MESSAGE */}
                     <SuccModal optionSucc={optionSucc} closeSuccModal={closeSuccModal} msg={msg} />
@@ -520,14 +543,14 @@ function AddPlaces() {
                         <button
                             disabled={isEmpty}
                             onClick={addPlace}
-                            className="max-w-md primary mt-10 mb-2"
+                            className="max-w-md  mt-10 mb-2  Sauv "
                         >
                             Sauvegarder
                         </button>
                         {id ? (
                             <button
-                                onClick={(ev) => removePlace(ev)}
-                                className="primary max-w-md primary"
+                                onClick={(ev) => handleDeleteClick(ev)} // Open modal with booking ID
+                                className=" max-w-md Suppri"
                             >
                                 Supprimer
                             </button>
@@ -535,6 +558,39 @@ function AddPlaces() {
                     </div>
                 </form>
             </div>
+
+              {/* Confirmation Modal */}
+      {showDelModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6  shadow-lg max-w-sm text-center">
+            <h3 className="text-lg font-semibold mb-4">Êtes-vous sûr ?</h3>
+            <p className="text-gray-600 mb-6">
+            Cette action est irréversible. Voulez-vous continuer ?
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={handleCancelDelete} // Close modal on cancel
+                className="bg-gray-200 text-gray-800 px-4 py-2 "
+              >
+              Annuler
+              </button>
+              <button
+                onClick={handleConfirmDelete} // Confirm deletion
+                className="bg-red-500 text-white px-4 py-2 "
+              >
+                Oui, supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+   <button
+        className="fixed top-4 left-0 z-50 bg-gray-700 text-white py-2 px-2 transition-opacity duration-200 hover:opacity-80"
+        onClick={() => window.history.back()}
+      >
+        <IoIosArrowBack size={18} />
+      </button>
         </div>
     );
 }

@@ -102,7 +102,7 @@ function BookingPlaces() {
           <input
             className="search-input-placeholder"
             type="text"
-            placeholder="Type to search..."
+            placeholder="Rechercher par prénom, nom ou ID"
             value={searchInput}
             onChange={handleSearchInputChange}
           />
@@ -134,13 +134,13 @@ function BookingPlaces() {
                   : `/account/BookingDetails/${place._id}`
               }
               key={place._id}
-              className="flex flex-col items-center md:flex-row gap-4 mt-4 bg-gray-100 rounded-2xl hover:shadow-md shadow-black transition duration-300 ease-in-out"
+              className="flex flex-col items-center md:flex-row gap-4 mt-4 bg-gray-100  hover:shadow-md shadow-black transition duration-300 ease-in-out"
             >
               {/* Image */}
               {place.idPhotos ? (
-                <div className="flex max-w-full h-46 md:max-w-[320px] md:h-44 bg-gray-300 shrink-0 rounded-tr-2xl rounded-tl-2xl md:rounded-tr-2xl md:rounded-tl-2xl md:rounded-2xl">
+                <div className="flex max-w-full h-46 md:max-w-[320px] md:h-44 bg-gray-300 shrink-0 ">
                   <img
-                    className="rounded-tl-2xl md:aspect-square md:w-[240px] lg:w-[280px] rounded-tr-2xl md:rounded-tr-none md:rounded-bl-2xl md:rounded-tl-2xl"
+                    className=" md:aspect-square md:w-[240px] lg:w-[280px] "
                     src={URL_TO_UPLOADS + place.idPhotos?.[0]}
                     alt={`${place.name}`}
                   />

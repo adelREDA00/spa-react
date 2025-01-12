@@ -5,6 +5,8 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { format } from "date-fns";
 import { fr } from 'date-fns/locale'; // Import the French locale
 import ImageModal from "./ImageModal";
+import { MdOutlineZoomOutMap } from "react-icons/md";
+import { IoIosArrowBack } from "react-icons/io";
 
 
 const URL_TO_UPLOADS =
@@ -111,18 +113,18 @@ function BookingDetails() {
     setShowModal(true); // Open modal
   };
 
-    // Handle confirmation to delete the booking
-    const handleConfirmDelete = async () => {
-      if (bookingIdToDelete) {
-        await removeBooking(bookingIdToDelete); // Delete the booking
-      }
-      setShowModal(false); // Close modal after delete
-    };
-  
-    // Handle cancel delete
-    const handleCancelDelete = () => {
-      setShowModal(false); // Close modal
-    };
+  // Handle confirmation to delete the booking
+  const handleConfirmDelete = async () => {
+    if (bookingIdToDelete) {
+      await removeBooking(bookingIdToDelete); // Delete the booking
+    }
+    setShowModal(false); // Close modal after delete
+  };
+
+  // Handle cancel delete
+  const handleCancelDelete = () => {
+    setShowModal(false); // Close modal
+  };
 
   if (!ready) {
     return (
@@ -185,43 +187,29 @@ function BookingDetails() {
             <div className="card">
               <div className="card-body flex flex-col items-center">
                 <div className="relative my-2 h-50 w-50 rounded-full">
-                  {/* <img
-                    src="./images/avatar11.png"
-                    alt="avatar-img"
-                    id="user-image"
-                    className="h-full w-full rounded-full"
-                  /> */}
-
                   {bookedPlace.idPhotos?.[0] && (
-
-                    <img
-                      // className="aspect-square object-cover rounded-2xl relative bottom-2 "
-                      src={
-                        URL_TO_UPLOADS +
-                        bookedPlace.idPhotos?.[0]
-                      }
-                      onClick={() => handleImageClick(URL_TO_UPLOADS +
-                        bookedPlace.idPhotos?.[0])}
-                      alt=""
-                    />
-
+                    <>
+                      <img
+                        src={URL_TO_UPLOADS + bookedPlace.idPhotos?.[0]}
+                        onClick={() =>
+                          handleImageClick(URL_TO_UPLOADS + bookedPlace.idPhotos?.[0])
+                        }
+                        alt=""
+                      />
+                      {/* Zoom Icon */}
+                      <div
+                        onClick={() =>
+                          handleImageClick(URL_TO_UPLOADS + bookedPlace.idPhotos?.[0])
+                        }
+                        className="absolute top-0 right-0 bg-gray-800 text-white p-1  cursor-pointer "
+                        title="Zoom In"
+                      >
+                        <MdOutlineZoomOutMap />
+                      </div>
+                    </>
                   )}
-
-                  {/* <label
-                    for="upload-avatar"
-                    className="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-slate-50 p-2 dark:bg-slate-900"
-                  >
-                    <span className="text-slate-600 dark:text-slate-300">
-                      <i className="w-full" data-feather="camera"></i>
-                    </span>
-                    <input
-                      type="file"
-                      accept="image/jpeg, image/png, image/jpg"
-                      className="hidden"
-                      id="upload-avatar"
-                    />
-                  </label> */}
                 </div>
+
                 <h2 > {bookedPlace.name}    {bookedPlace.familyName}</h2>
                 <p className="text-sm font-normal tracking-tight text-slate-400">{bookedPlace.phone}   </p>
                 {/* <div className="badge badge-soft-success my-3 inline-block px-4">Payment</div> */}
@@ -240,16 +228,25 @@ function BookingDetails() {
 
                   {bookedPlace.idPhotos?.[1] && (
 
-                    <img
-                      // className="aspect-square object-cover rounded-2xl relative bottom-2 "
-                      src={
-                        URL_TO_UPLOADS +
-                        bookedPlace.idPhotos?.[1]
-                      }
-                      onClick={() => handleImageClick(URL_TO_UPLOADS +
-                        bookedPlace.idPhotos?.[1])}
-                      alt=""
-                    />
+                    <>
+                      <img
+                        src={URL_TO_UPLOADS + bookedPlace.idPhotos?.[1]}
+                        onClick={() =>
+                          handleImageClick(URL_TO_UPLOADS + bookedPlace.idPhotos?.[1])
+                        }
+                        alt=""
+                      />
+                      {/* Zoom Icon */}
+                      <div
+                        onClick={() =>
+                          handleImageClick(URL_TO_UPLOADS + bookedPlace.idPhotos?.[1])
+                        }
+                        className="absolute top-0 right-0 bg-gray-800 text-white p-1 cursor-pointer "
+                        title="Zoom In"
+                      >
+                        <MdOutlineZoomOutMap />
+                      </div>
+                    </>
 
                   )}
 
@@ -313,7 +310,7 @@ function BookingDetails() {
                 <div className="my-3 flex items-center gap-4">
 
                   <div>
-                  <h5 className="text-sm font-medium ">Montant de la garantie</h5>
+                    <h5 className="text-sm font-medium ">Montant de la garantie</h5>
                     <span>
                       <p className={`gadget ${bookedPlace.securityDeposit.status === 'en attente' ? 'wait-state' : bookedPlace.securityDeposit.status === 'bloqué' ? 'succ-state' : ''}`}>
                         {bookedPlace.securityDeposit.amount} €
@@ -770,40 +767,47 @@ function BookingDetails() {
         </div> */}
 
       </main>
-    <div className="flex justify-center mt-4">
-      <button
-        onClick={() => handleDeleteClick(id)} // Open modal with booking ID
-        className="primary max-w-[200px] md:max-w-md mb-4"
-      >
-        Supprimer la réservation
-      </button>
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={() => handleDeleteClick(id)} // Open modal with booking ID
+          className="max-w-[200px] md:max-w-md mb-4 Suppri"
+        >
+          Supprimer la réservation
+        </button>
 
-      {/* Confirmation Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm text-center">
-            <h3 className="text-lg font-semibold mb-4">Êtes-vous sûr ?</h3>
-            <p className="text-gray-600 mb-6">
-            Cette action est irréversible. Voulez-vous continuer ?
-            </p>
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={handleCancelDelete} // Close modal on cancel
-                className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg"
-              >
-              Annuler
-              </button>
-              <button
-                onClick={handleConfirmDelete} // Confirm deletion
-                className="bg-red-500 text-white px-4 py-2 rounded-lg"
-              >
-                Oui, supprimer
-              </button>
+        {/* Confirmation Modal */}
+        {showModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white p-6  shadow-lg max-w-sm text-center">
+              <h3 className="text-lg font-semibold mb-4">Êtes-vous sûr ?</h3>
+              <p className="text-gray-600 mb-6">
+                Cette action est irréversible. Voulez-vous continuer ?
+              </p>
+              <div className="flex justify-center gap-4">
+                <button
+                  onClick={handleCancelDelete} // Close modal on cancel
+                  className="bg-gray-200 text-gray-800 px-4 py-2 "
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={handleConfirmDelete} // Confirm deletion
+                  className="bg-red-500 text-white px-4 py-2 "
+                >
+                  Oui, supprimer
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+
+      <button
+        className="fixed top-4 left-0 z-50 bg-gray-700 text-white py-2 px-2 transition-opacity duration-200 hover:opacity-80"
+        onClick={() => window.history.back()}
+      >
+        <IoIosArrowBack size={18} />
+      </button>
 
 
     </div>
