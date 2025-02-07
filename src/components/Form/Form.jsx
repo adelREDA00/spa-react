@@ -203,29 +203,26 @@ function Form({ stripePromise }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedBox, setSelectedBox] = useState(null);
-  const [checkedItems, setCheckedItems] = useState({}); // Object to store checked state for each item
+  const [checkedItems, setCheckedItems] = useState([]); // Now an array of selected box IDs
 
-  const handleBoxChange = (selectedbox, index) => {
-    setSelectedBox(prevSelectedBox => {
-      // If the same box is selected, unselect it by setting selectedBox to null
-      if (prevSelectedBox && prevSelectedBox.name === selectedbox.name) {
-        return null;
-      } else {
-        // Otherwise, select the new box
-        return selectedbox;
-      }
-    });
-
+  const handleBoxChange = (selectedBox, index) => {
     setCheckedItems(prevState => {
-      // If the box is already checked, uncheck all boxes (reset checkedItems)
+      // If the box is already checked, uncheck it (remove it from the selected boxes)
       if (prevState[index]) {
-        return {};
+        const newState = { ...prevState };
+        delete newState[index]; // Remove this box from the selected list
+        return newState;
       } else {
-        // Otherwise, check the current box and uncheck all others
-        return { [index]: true };
+        // Otherwise, check the box by adding it to the selected boxes
+        return { ...prevState, [index]: true };
       }
     });
+
+    console.log(checkedItems);
+
   };
+
+
 
 
 
@@ -347,16 +344,17 @@ function Form({ stripePromise }) {
 
 
   // CALC TOTAL
-
   const calculateTotal = () => {
-    // Initialize total to 0
     let total = 0;
-
-    // Add the price of the selected box if it exists
-    if (selectedBox) {
-      total += parseInt(selectedBox.price || 0);
-    }
-
+  
+    // Add the prices of all selected boxes
+    Object.keys(checkedItems).forEach((index) => {
+      const box = boxes[index];
+      if (box) {
+        total += parseInt(box.price || 0);
+      }
+    });
+  
     // Add the prices from the addedDates
     addedDates.forEach(({ options, prices }) => {
       options.forEach((option) => {
@@ -367,16 +365,17 @@ function Form({ stripePromise }) {
         }
       });
     });
-
+  
     // Add the cost of sheets if selected
     if (includeSheets) {
       total += 20;
     }
-
-    // Update the total state and return the total
+  
+    // Update the total state
     setTotal(total);
     return total;
   };
+  
 
   // Recalculate total whenever selectedBox or addedDates changes
   useEffect(() => {
@@ -491,6 +490,14 @@ function Form({ stripePromise }) {
     // Combine images from both persons into a single array
     const idPhotos = [...idPhotosPerson1, ...idPhotosPerson2];
 
+    // Collect the selected box IDs based on the checkedItems state
+    const selectedBoxIds = Object.keys(checkedItems)
+      .map(index => {
+        const box = boxes[index];
+        return box ? box._id : null; // Ensure that the box exists
+      })
+      .filter(id => id !== null); // Filter out null values in case of invalid boxes
+
     // Step 4: Consolidate all booking data into one object
     const bookingData = {
       place: placeId,
@@ -507,7 +514,7 @@ function Form({ stripePromise }) {
       addressTwo,
       phoneTwo,
       idPhotos, // Combined images with metadata
-      boxes: selectedBox ? selectedBox._id : null, // Include the selected box ID if it exists
+      boxes: selectedBoxIds,
       includeSheets, // Include the sheets option
       total: parseFloat(total),
       paymentStatus: "pending", // Set payment status to pending initially
@@ -633,8 +640,8 @@ function Form({ stripePromise }) {
             // securityDeposit: Math.round(200 * 100),
             name: name, // Replace with the actual user's name from your state or props
             familyName: familyName, // Replace with the actual user's family name from your state or props
-            email: email ,// Replace with the actual user's email from your state or props
-            bookingId:bookingId
+            email: email,// Replace with the actual user's email from your state or props
+            bookingId: bookingId
           });
           setBookingFeeClientSecret(response.data.bookingFeeClientSecret);
           // setSecurityDepositClientSecret(response.data.securityDepositClientSecret);
@@ -1098,6 +1105,7 @@ function Form({ stripePromise }) {
                     </div>
                   )}
 
+
                   {/* 
                   <aside className="aside">
                     <section className="extras">
@@ -1397,42 +1405,48 @@ function Form({ stripePromise }) {
                     ))}
 
 
-                    <details >
+                    <details>
                       <summary>
                         <div>
-
-                          <h3 className='recap-filed' >
-                            <strong> Box  </strong>
-                            <small>{selectedBox ? selectedBox.name : 'Aucune box sélectionnée'}</small>
+                          <h3 className="recap-filed">
+                            <strong>Box</strong>
+                            <small>
+                              {Object.keys(checkedItems).length > 0
+                                ? `${Object.keys(checkedItems).length} box${Object.keys(checkedItems).length > 1 ? 'es' : ''} sélectionnée(s)`
+                                : 'Aucune box sélectionnée'}
+                            </small>
                           </h3>
                           <span>
-                            {selectedBox ? `${selectedBox.price} ` : '0'}
-                            €
+                            {Object.keys(checkedItems).length > 0
+                              ? Object.keys(checkedItems).reduce((total, index) => total + boxes[index].price, 0)
+                              : 0} €
                           </span>
                         </div>
                       </summary>
                       <div>
                         <dl>
-                          <div>
-                            <dt>{selectedBox ? selectedBox.name : 'Aucune box sélectionnée'}</dt>
-                            <dd>
-                              <span >
-                                {selectedBox ? (
-                                  Array.isArray(selectedBox.items) ? (
-                                    selectedBox.items.join(', ')
-                                  ) : (
-                                    'No items available'
-                                  )
-                                ) : (
-                                  'No box selected'
-                                )}
-                              </span>
-
-                            </dd>
-                          </div>
+                          {Object.keys(checkedItems).length > 0 ? (
+                            Object.keys(checkedItems).map((index) => (
+                              <div key={boxes[index]._id}>
+                                <dt>{boxes[index].name}</dt>
+                                <dd>
+                                  <span>
+                                    {Array.isArray(boxes[index].items) ? boxes[index].items.join(', ') : 'No items available'}
+                                  </span>
+                                </dd>
+                              </div>
+                            ))
+                          ) : (
+                            <div>
+                              <dt>Aucune box sélectionnée</dt>
+                              <dd>No box selected</dd>
+                            </div>
+                          )}
                         </dl>
                       </div>
                     </details>
+
+
 
 
                     {/* Sheets Summary */}

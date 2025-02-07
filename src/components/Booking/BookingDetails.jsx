@@ -239,8 +239,8 @@ function BookingDetails() {
                   <div>
                     <h5 className="text-sm font-medium ">Frais de réservation</h5>
                     <span className="cursor-not-allowed">
-                    <p className={`gadget ${bookedPlace.paymentStatus.status === 'en attente' ? 'wait-state' : bookedPlace.paymentStatus.status === 'payé' ? 'succ-state' : ''}`}>
-                    {bookedPlace.paymentStatus.status}</p>
+                      <p className={`gadget ${bookedPlace.paymentStatus.status === 'en attente' ? 'wait-state' : bookedPlace.paymentStatus.status === 'payé' ? 'succ-state' : ''}`}>
+                        {bookedPlace.paymentStatus.status}</p>
                     </span>
                   </div>
                 </div>
@@ -514,45 +514,49 @@ function BookingDetails() {
                 ))}
 
 
-                <details >
+                <details>
                   <summary>
                     <div>
-
-                      <h3 className='recap-filed' >
-                        <strong> Box  </strong>
-                        <small> {bookedPlace.boxes ? bookedPlace.boxes.name : 'Aucune box sélectionnée'}</small>
+                      <h3 className="recap-filed">
+                        <strong>Box</strong>
+                        <small>
+                          {bookedPlace.boxes && bookedPlace.boxes.length > 0
+                            ? `${bookedPlace.boxes.length} box${bookedPlace.boxes.length > 1 ? 'es' : ''} sélectionnée(s)`
+                            : 'Aucune box sélectionnée'}
+                        </small>
                       </h3>
                       <span>
-                        {bookedPlace.boxes ? `${bookedPlace.boxes.price} ` : '0'}
-                        €
+                        {bookedPlace.boxes && bookedPlace.boxes.length > 0
+                          ? bookedPlace.boxes.reduce((total, box) => total + box.price, 0)
+                          : 0} €
                       </span>
                     </div>
                   </summary>
                   <div>
                     <dl>
-                      <div>
-                        <dt>{bookedPlace.boxes ? bookedPlace.boxes.name : 'Aucune box sélectionnée'}</dt>
-                        <dd>
-                          <span >
-                            {bookedPlace.boxes ? (
-                              Array.isArray(bookedPlace.boxes.items) ? (
-                                bookedPlace.boxes.items.join(', ')
-                              ) : (
-                                'No items available'
-                              )
-                            ) : (
-                              'No box selected'
-                            )}
-                          </span>
-
-                        </dd>
-                      </div>
+                      {bookedPlace.boxes && bookedPlace.boxes.length > 0 ? (
+                        bookedPlace.boxes.map((box) => (
+                          <div key={box._id}>
+                            <dt>{box.name}</dt>
+                            <dd>
+                              <span>
+                                {Array.isArray(box.items) ? box.items.join(', ') : 'No items available'}
+                              </span>
+                            </dd>
+                          </div>
+                        ))
+                      ) : (
+                        <div>
+                          <dt>Aucune box sélectionnée</dt>
+                          <dd>No box selected</dd>
+                        </div>
+                      )}
                     </dl>
                   </div>
                 </details>
 
 
-     
+
                 {/* Serviette de Bain Summary */}
                 <details>
                   <summary>

@@ -2358,16 +2358,34 @@ button.primary:hover {
   stroke: #4285f4;
 }
 
-#cbx:checked+.check svg {
+// #cbx:checked+.check svg {
+//   stroke: #4285f4;
+// }
+
+// #cbx:checked+.check svg path {
+//   stroke-dashoffset: 60;
+//   transition: all 0.3s linear;
+// }
+
+// #cbx:checked+.check svg polyline {
+//   stroke-dashoffset: 42;
+//   transition: all 0.2s linear;
+//   transition-delay: 0.15s;
+// }
+
+#cbx:checked + .check svg,
+#cbx2:checked + .check svg {
   stroke: #4285f4;
 }
 
-#cbx:checked+.check svg path {
+#cbx:checked + .check svg path,
+#cbx2:checked + .check svg path {
   stroke-dashoffset: 60;
   transition: all 0.3s linear;
 }
 
-#cbx:checked+.check svg polyline {
+#cbx:checked + .check svg polyline,
+#cbx2:checked + .check svg polyline {
   stroke-dashoffset: 42;
   transition: all 0.2s linear;
   transition-delay: 0.15s;
