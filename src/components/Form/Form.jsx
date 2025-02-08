@@ -173,7 +173,7 @@ function Form({ stripePromise }) {
 
 
   const [planPrices, setPlanPrices] = useState({
-    monthly: [2, 190],//95
+    monthly: [1, 190],//95
     yearly: [230, 125],
   });
   const [addonPrices, setAddonPrices] = useState({
@@ -185,7 +185,7 @@ function Form({ stripePromise }) {
   useEffect(() => {
     // Fetch initial plan and addon prices
     setPlanPrices({
-      monthly: [2, 190],//95
+      monthly: [1, 190],//95
       yearly: [230, 125],
     });
     setAddonPrices({
@@ -439,7 +439,7 @@ function Form({ stripePromise }) {
       setPrices({ night: 230, afternoon: 125 });
     } else {
       // setPrices({ night: 190, afternoon: 95 });
-      setPrices({ night: 190, afternoon: 2 });
+      setPrices({ night: 190, afternoon: 1 });
     }
   };
 
@@ -567,7 +567,7 @@ function Form({ stripePromise }) {
     const dayType = day === 0 || day === 5 || day === 6 ? 'Weekend' : 'Jour de la semaine';
 
     // Calculate prices based on the day type
-    const prices = dayType === 'Weekend' ? { night: 230, afternoon: 125 } : { night: 190, afternoon: 2 }; //95
+    const prices = dayType === 'Weekend' ? { night: 230, afternoon: 125 } : { night: 190, afternoon: 1 }; //95
 
     // Check if the selected date already exists in addedDates
     const existingDateIndex = addedDates.findIndex(
