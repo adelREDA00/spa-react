@@ -77,8 +77,7 @@ const PaymentComponent = ({ isLoadingStripe, messageStripe, paymentElementOption
             </svg>
           </label>
           <p>
-            Je reconnais qu'une somme de <strong>200 €</strong> sera bloquée sur ma carte <strong>24 heures</strong> avant la date de réservation, en cas de dommages.
-            Ce montant ne sera pas débité et sera libéré à la fin de la réservation.
+            je reconnais qu’une  caution de 200€ sera demandé lors de la remise des clés, via empreinte bancaire.Un lien vous sera envoyé .<strong> Le montant ne sera pas débité et sera libéré à la fin de la réservation</strong>, sous réserve du respect du règlement intérieur de notre établissement
           </p>
         </div>
 
@@ -99,8 +98,7 @@ const PaymentComponent = ({ isLoadingStripe, messageStripe, paymentElementOption
             </svg>
           </label>
           <p>
-            Je reconnais qu'une somme de <strong>200 €</strong> sera bloquée sur ma carte <strong>24 heures</strong> avant la date de réservation, en cas de dommages.
-            Ce montant ne sera pas débité et sera libéré à la fin de la réservation.
+          je reconnais que le paiement ne sera ni remboursé et échangeable en cas d’annulation pour quelconques raisons
           </p>
         </div>
 
