@@ -4,6 +4,7 @@ import { FaSnapchat } from "react-icons/fa6";
 import { MdAlternateEmail } from "react-icons/md";
 import { FiSend } from "react-icons/fi";
 import { TbWorldShare } from "react-icons/tb";
+import { IoLogoTiktok } from "react-icons/io5";
 
 
 
@@ -107,6 +108,7 @@ function Support() {
       </section> */}
 
       <div className="mt-12">
+
         <h1 className="section-header"> Contact</h1>
         {/* <p >  Nos Règles pour un Séjour Agréable</p> */}
 
@@ -118,7 +120,7 @@ function Support() {
           <div className="mt-4">
 
             <p className="text-base">
-            Privatesuite.spa@gmail.com
+              Privatesuite.spa@gmail.com
             </p>
 
           </div>
@@ -126,42 +128,99 @@ function Support() {
 
         <br />
 
-     <a href="https://www.instagram.com/privatesuite.spa" target="_blank" rel="noopener noreferrer">
-     
-     <div className="bg-gray-100  text-sm md:text-base px-2 md:px-6 py-4 mt-2">
-          <h3 className="mb-2 sou-title">
-            <FaInstagram size={20} />
-            Instagram 
-          </h3>
-          <div className="flex flex-row items-center text-gray-500">
+        <a href="https://www.instagram.com/privatesuite.spa" target="_blank" rel="noopener noreferrer">
 
-            <p className="mr-3">
+          <div className="bg-gray-100  text-sm md:text-base px-2 md:px-6 py-4 mt-2">
+            <h3 className="mb-2 sou-title">
+              <FaInstagram size={20} />
+              Instagram
+            </h3>
+            <div className="flex flex-row items-center text-gray-500">
 
-              privatesuite.spa
+              <p className="mr-3">
+
+                privatesuite.spa
 
 
-            </p>
+              </p>
 
+
+            </div>
 
           </div>
 
-        </div>
+        </a>
 
-     </a>
+
+
+        <br />
+
+        <a href="https://snapchat.com/t/sA3MUaSs" target="_blank" rel="noopener noreferrer">
+
+          <div className="bg-gray-100  text-sm md:text-base px-2 md:px-6 py-4 mt-2">
+            <h3 className="mb-2 sou-title">
+              <FaSnapchat size={20} />
+              Snapchat
+            </h3>
+            <div className="flex flex-row items-center text-gray-500">
+
+              <p className="mr-3">
+
+              https://snapchat.com/t/sA3MUaSs
+
+
+              </p>
+
+
+            </div>
+
+          </div>
+
+        </a>
+
+
+        <br />
+
+<a href="https://www.tiktok.com/@privatesuite.spa?_t=ZN-8tgeDSvoFTK&_r=1" target="_blank" rel="noopener noreferrer">
+
+  <div className="bg-gray-100  text-sm md:text-base px-2 md:px-6 py-4 mt-2">
+    <h3 className="mb-2 sou-title">
+      <IoLogoTiktok size={20} />
+      Tiktok
+    </h3>
+    <div className="flex flex-row items-center text-gray-500">
+
+      <p className="mr-3">
+
+      https://www.tiktok.com/@privatesuite.spa?_t=ZN-8tgeDSvoFTK&_r=1
+
+
+      </p>
+
+
+    </div>
+
+  </div>
+
+</a>
 
 
       </div>
 
 
 
+
+
       <div className=" mt-6" />
+
+
 
       <a href="https://privatesuitespalyon.fr" target="_blank" rel="noopener noreferrer">
 
         <div className="bg-gray-100  text-sm md:text-base px-2 md:px-6 py-4 mt-2">
           <h3 className="mb-2 sou-title">
             <TbWorldShare size={20} />
-            Site principal 
+            Site principal
           </h3>
           <div className="flex flex-row items-center text-gray-500">
 
@@ -180,8 +239,7 @@ function Support() {
 
 
 
-
-
+      <br />      <br />
     </div>
   );
 }
