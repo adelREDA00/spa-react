@@ -447,7 +447,6 @@ function Form({ stripePromise }) {
 
   const specialDates = {
     "02-14": { dayType: "Valentine", prices: { night: 250, afternoon: 150 } },
-    "02-18": { dayType: "test", prices: { night: 1, afternoon: 1 } },
     // Add more special dates as needed
   };
 
@@ -477,9 +476,6 @@ function Form({ stripePromise }) {
       case "Valentine":
         setPrices({ night: 250, afternoon: 150 }); // Special prices for Valentine's Day
         break;
-        case "test":
-          setPrices({ night: 1, afternoon: 1 }); // Special prices for Valentine's Day
-          break;
       default:
         setPrices({ night: 190, afternoon: 95 }); // Default to weekday prices
     }
