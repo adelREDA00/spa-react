@@ -16,6 +16,7 @@
         "@stripe/react-stripe-js": "^2.8.1",
         "@stripe/stripe-js": "^4.9.0",
         "axios": "^1.4.0",
+        "browser-image-compression": "^2.0.2",
         "date-fns": "^3.6.0",
         "react": "^18.2.0",
         "react-date-range": "^2.0.1",

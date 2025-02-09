@@ -19,6 +19,7 @@ import PaymentComponent from './PaymentComponent';
 import ClipLoader from "react-spinners/ClipLoader";
 import { IoAdd } from "react-icons/io5";
 import { IoClose } from "react-icons/io5";
+import imageCompression from 'browser-image-compression';
 
 axios.defaults.baseURL = "https://localhost:5000";
 axios.defaults.withCredentials = true;
@@ -346,7 +347,7 @@ function Form({ stripePromise }) {
   // CALC TOTAL
   const calculateTotal = () => {
     let total = 0;
-  
+
     // Add the prices of all selected boxes
     Object.keys(checkedItems).forEach((index) => {
       const box = boxes[index];
@@ -354,7 +355,7 @@ function Form({ stripePromise }) {
         total += parseInt(box.price || 0);
       }
     });
-  
+
     // Add the prices from the addedDates
     addedDates.forEach(({ options, prices }) => {
       options.forEach((option) => {
@@ -365,17 +366,17 @@ function Form({ stripePromise }) {
         }
       });
     });
-  
+
     // Add the cost of sheets if selected
     if (includeSheets) {
       total += 20;
     }
-  
+
     // Update the total state
     setTotal(total);
     return total;
   };
-  
+
 
   // Recalculate total whenever selectedBox or addedDates changes
   useEffect(() => {
@@ -446,13 +447,14 @@ function Form({ stripePromise }) {
 
   const specialDates = {
     "02-14": { dayType: "Valentine", prices: { night: 250, afternoon: 150 } },
+    "02-18": { dayType: "test", prices: { night: 1, afternoon: 1 } },
     // Add more special dates as needed
   };
-  
+
   const determineDayType = (date) => {
     const day = date.getDay();
     const dateKey = `${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-  
+
     if (specialDates[dateKey]) {
       const { dayType, prices } = specialDates[dateKey];
       setDayType(dayType);
@@ -463,7 +465,7 @@ function Form({ stripePromise }) {
       calculatePrices(newDayType);
     }
   };
-  
+
   const calculatePrices = (dayType) => {
     switch (dayType) {
       case "Weekend":
@@ -475,6 +477,9 @@ function Form({ stripePromise }) {
       case "Valentine":
         setPrices({ night: 250, afternoon: 150 }); // Special prices for Valentine's Day
         break;
+        case "test":
+          setPrices({ night: 1, afternoon: 1 }); // Special prices for Valentine's Day
+          break;
       default:
         setPrices({ night: 190, afternoon: 95 }); // Default to weekday prices
     }
@@ -482,13 +487,120 @@ function Form({ stripePromise }) {
 
 
 
-  //prepare the booknig data before sending it to the strip-comp
+  // //prepare the booknig data before sending it to the strip-comp
+  // const prepareBookingData = async () => {
+  //   // Adjust dates for timezone offset
+  //   const adjustedDates = addedDates.map(({ date, options, prices }) => ({
+  //     date: new Date(date.getTime() - date.getTimezoneOffset() * 60000), // Adjust for timezone
+  //     options, // Include selected options (e.g., "Nuit", "Après-midi")
+  //     prices, // Include prices for the options
+  //   }));
+
+  //   // Ensure all required fields are filled
+  //   if (!name || !familyName || !email || !phone || !addedDates || !total) {
+  //     setError("Please complete all required fields before proceeding.");
+  //     return null;
+  //   }
+
+  //   // Step 1: Prepare FormData for the images upload
+  //   const formData = new FormData();
+  //   uploadPhotosPerson1.forEach((file) => formData.append("photos", file));
+  //   uploadPhotosPerson2.forEach((file) => formData.append("photos", file));
+
+  //   // Step 2: Upload images to the server
+  //   let uploadedImages;
+  //   try {
+  //     const response = await api.uploadPhotoFromDevice(formData); // Assuming this API handles the upload
+  //     if (!response || !Array.isArray(response)) {
+  //       throw new Error("Failed to upload files or response is invalid");
+  //     }
+  //     uploadedImages = response; // Assuming this returns the uploaded image URLs
+  //   } catch (error) {
+  //     console.error("Image Upload Error:", error.message);
+  //     setError("Failed to upload images. Please try again.");
+  //     return null;
+  //   }
+
+  //   // Step 3: Add metadata to each image URL (from the uploaded images)
+  //   const idPhotosPerson1 = uploadedImages
+  //     .slice(0, uploadPhotosPerson1.length)
+  //     .map((url) => ({ url, person: 1 })); // Add person: 1 metadata
+  //   const idPhotosPerson2 = uploadedImages
+  //     .slice(uploadPhotosPerson1.length)
+  //     .map((url) => ({ url, person: 2 })); // Add person: 2 metadata
+
+  //   // Combine images from both persons into a single array
+  //   const idPhotos = [...idPhotosPerson1, ...idPhotosPerson2];
+
+  //   // Collect the selected box IDs based on the checkedItems state
+  //   const selectedBoxIds = Object.keys(checkedItems)
+  //     .map(index => {
+  //       const box = boxes[index];
+  //       return box ? box._id : null; // Ensure that the box exists
+  //     })
+  //     .filter(id => id !== null); // Filter out null values in case of invalid boxes
+
+  //   // Step 4: Consolidate all booking data into one object
+  //   const bookingData = {
+  //     place: placeId,
+  //     dates: adjustedDates, // Include the adjusted dates with options and prices
+  //     price: parseFloat(total), // Total price
+  //     name,
+  //     familyName,
+  //     email,
+  //     address,
+  //     phone,
+  //     nameTwo,
+  //     familyNameTwo,
+  //     emailTwo,
+  //     addressTwo,
+  //     phoneTwo,
+  //     idPhotos, // Combined images with metadata
+  //     boxes: selectedBoxIds,
+  //     includeSheets, // Include the sheets option
+  //     total: parseFloat(total),
+  //     paymentStatus: "pending", // Set payment status to pending initially
+  //   };
+
+  //   // Step 5: Send the booking data to the backend to create the booking
+  //   try {
+  //     const bookingResponse = await fetch(`${URL}/place/booking/${placeId}`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(bookingData),
+  //     });
+
+  //     if (!bookingResponse.ok) {
+  //       throw new Error("Failed to create booking on the server");
+  //     }
+
+  //     const booking = await bookingResponse.json();
+  //     if (!booking || !booking._id) {
+  //       throw new Error("Invalid booking response from the server");
+  //     }
+
+  //     console.log("Booking created successfully:", booking);
+
+  //     // You can now handle the next steps (like redirecting, showing success, etc.)
+  //     return booking; // You can use this object later if needed
+
+  //   } catch (error) {
+  //     console.error("Booking Creation Error:", error.message);
+  //     setError("Failed to create the booking. Please try again.");
+  //     return null;
+  //   }
+  // };
+
+
+
   const prepareBookingData = async () => {
     // Adjust dates for timezone offset
     const adjustedDates = addedDates.map(({ date, options, prices }) => ({
-      date: new Date(date.getTime() - date.getTimezoneOffset() * 60000), // Adjust for timezone
-      options, // Include selected options (e.g., "Nuit", "Après-midi")
-      prices, // Include prices for the options
+      date: new Date(date.getTime() - date.getTimezoneOffset() * 60000),
+      options,
+      prices,
     }));
 
     // Ensure all required fields are filled
@@ -497,49 +609,70 @@ function Form({ stripePromise }) {
       return null;
     }
 
-    // Step 1: Prepare FormData for the images upload
-    const formData = new FormData();
-    uploadPhotosPerson1.forEach((file) => formData.append("photos", file));
-    uploadPhotosPerson2.forEach((file) => formData.append("photos", file));
+    // Define compression options
+    const compressionOptions = {
+      maxSizeMB: 0.3, // Target ~300KB
+      maxWidthOrHeight: 1024, // Resize to 1024px max
+      initialQuality: 0.7, // 70% quality
+      useWebWorker: true, // Faster compression
+    };
 
-    // Step 2: Upload images to the server
+    // Function to compress images while keeping original format
+    const compressImages = async (files) => {
+      return Promise.all(
+        files.map(async (file) => {
+          if (file.size < 200 * 1024) {
+            return file; // Skip compression for small files
+          }
+          return await imageCompression(file, { ...compressionOptions, fileType: file.type });
+        })
+      );
+    };
+
+    // Step 1: Compress images for both persons
+    let compressedPhotosPerson1 = await compressImages(uploadPhotosPerson1);
+    let compressedPhotosPerson2 = await compressImages(uploadPhotosPerson2);
+
+    // Step 2: Prepare FormData for uploading compressed images
+    const formData = new FormData();
+    compressedPhotosPerson1.forEach((file) => formData.append("photos", file));
+    compressedPhotosPerson2.forEach((file) => formData.append("photos", file));
+
+    // Step 3: Upload images to the server
     let uploadedImages;
     try {
-      const response = await api.uploadPhotoFromDevice(formData); // Assuming this API handles the upload
+      const response = await api.uploadPhotoFromDevice(formData);
       if (!response || !Array.isArray(response)) {
         throw new Error("Failed to upload files or response is invalid");
       }
-      uploadedImages = response; // Assuming this returns the uploaded image URLs
+      uploadedImages = response; // Assuming the API returns uploaded image URLs
     } catch (error) {
       console.error("Image Upload Error:", error.message);
       setError("Failed to upload images. Please try again.");
       return null;
     }
 
-    // Step 3: Add metadata to each image URL (from the uploaded images)
+    // Step 4: Add metadata to each uploaded image
     const idPhotosPerson1 = uploadedImages
       .slice(0, uploadPhotosPerson1.length)
-      .map((url) => ({ url, person: 1 })); // Add person: 1 metadata
+      .map((url) => ({ url, person: 1 }));
     const idPhotosPerson2 = uploadedImages
       .slice(uploadPhotosPerson1.length)
-      .map((url) => ({ url, person: 2 })); // Add person: 2 metadata
+      .map((url) => ({ url, person: 2 }));
 
-    // Combine images from both persons into a single array
+    // Combine images from both persons
     const idPhotos = [...idPhotosPerson1, ...idPhotosPerson2];
 
-    // Collect the selected box IDs based on the checkedItems state
+    // Collect selected box IDs
     const selectedBoxIds = Object.keys(checkedItems)
-      .map(index => {
-        const box = boxes[index];
-        return box ? box._id : null; // Ensure that the box exists
-      })
-      .filter(id => id !== null); // Filter out null values in case of invalid boxes
+      .map((index) => boxes[index]?._id)
+      .filter(Boolean); // Remove null values
 
-    // Step 4: Consolidate all booking data into one object
+    // Step 5: Consolidate all booking data
     const bookingData = {
       place: placeId,
-      dates: adjustedDates, // Include the adjusted dates with options and prices
-      price: parseFloat(total), // Total price
+      dates: adjustedDates,
+      price: parseFloat(total),
       name,
       familyName,
       email,
@@ -550,14 +683,14 @@ function Form({ stripePromise }) {
       emailTwo,
       addressTwo,
       phoneTwo,
-      idPhotos, // Combined images with metadata
+      idPhotos,
       boxes: selectedBoxIds,
-      includeSheets, // Include the sheets option
+      includeSheets,
       total: parseFloat(total),
-      paymentStatus: "pending", // Set payment status to pending initially
+      paymentStatus: "pending",
     };
 
-    // Step 5: Send the booking data to the backend to create the booking
+    // Step 6: Send booking data to backend
     try {
       const bookingResponse = await fetch(`${URL}/place/booking/${placeId}`, {
         method: "POST",
@@ -577,10 +710,7 @@ function Form({ stripePromise }) {
       }
 
       console.log("Booking created successfully:", booking);
-
-      // You can now handle the next steps (like redirecting, showing success, etc.)
-      return booking; // You can use this object later if needed
-
+      return booking;
     } catch (error) {
       console.error("Booking Creation Error:", error.message);
       setError("Failed to create the booking. Please try again.");
@@ -646,10 +776,10 @@ function Form({ stripePromise }) {
       alert("Veuillez sélectionner une date et au moins une option avant d'ajouter.");
       return;
     }
-  
+
     // Build a date key in MM-DD format
     const dateKey = `${String(startDate.getMonth() + 1).padStart(2, "0")}-${String(startDate.getDate()).padStart(2, "0")}`;
-  
+
     // Determine prices and day type based on special dates or regular logic
     let prices;
     let dayType;
@@ -659,16 +789,16 @@ function Form({ stripePromise }) {
     } else {
       const day = startDate.getDay();
       dayType = day === 0 || day === 5 || day === 6 ? 'Weekend' : 'Jour de la semaine';
-      prices = dayType === 'Weekend' 
-        ? { night: 230, afternoon: 125 } 
+      prices = dayType === 'Weekend'
+        ? { night: 230, afternoon: 125 }
         : { night: 190, afternoon: 95 };
     }
-  
+
     // Check if the selected date already exists in addedDates
     const existingDateIndex = addedDates.findIndex(
       (addedDate) => addedDate.date.toDateString() === startDate.toDateString()
     );
-  
+
     if (existingDateIndex !== -1) {
       // If the date already exists, merge the options
       const updatedAddedDates = [...addedDates];
@@ -686,7 +816,7 @@ function Form({ stripePromise }) {
         { date: startDate, options: option, prices },
       ]);
     }
-  
+
     // Reset to allow selecting a new date
     setIsDateSelected(false);
     setStartDate(new Date());
@@ -694,7 +824,7 @@ function Form({ stripePromise }) {
   };
 
 
-  
+
   //Delete selected date 
   const handleDeleteDate = (index) => {
     // Create a copy of addedDates and remove the entry at the specified index
