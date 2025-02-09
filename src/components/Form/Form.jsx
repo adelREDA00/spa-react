@@ -173,7 +173,7 @@ function Form({ stripePromise }) {
 
 
   const [planPrices, setPlanPrices] = useState({
-    monthly: [1, 190],//95
+    monthly: [95, 190],//95
     yearly: [230, 125],
   });
   const [addonPrices, setAddonPrices] = useState({
@@ -185,7 +185,7 @@ function Form({ stripePromise }) {
   useEffect(() => {
     // Fetch initial plan and addon prices
     setPlanPrices({
-      monthly: [1, 190],//95
+      monthly: [95, 190],//95
       yearly: [230, 125],
     });
     setAddonPrices({
@@ -426,20 +426,57 @@ function Form({ stripePromise }) {
 
 
 
-  //GET THE DATE TYPE WEEKEND OR WEE-KDAY
+  // //GET THE DATE TYPE WEEKEND OR WEE-KDAY
+  // const determineDayType = (date) => {
+  //   const day = date.getDay();
+  //   const newDayType = day === 0 || day === 6 || day === 5 ? 'Weekend' : 'Jour de la semaine';
+  //   setDayType(newDayType);
+  //   calculatePrices(newDayType);
+  // };
+  // //CLALC THE DAY PRICE
+  // const calculatePrices = (dayType) => {
+  //   if (dayType === 'Weekend') {
+  //     setPrices({ night: 230, afternoon: 125 });
+  //   } else {
+  //     // setPrices({ night: 190, afternoon: 95 });
+  //     setPrices({ night: 190, afternoon: 95 });
+  //   }
+  // };
+
+
+  const specialDates = {
+    "02-14": { dayType: "Valentine", prices: { night: 250, afternoon: 150 } },
+    // Add more special dates as needed
+  };
+  
   const determineDayType = (date) => {
     const day = date.getDay();
-    const newDayType = day === 0 || day === 6 || day === 5 ? 'Weekend' : 'Jour de la semaine';
-    setDayType(newDayType);
-    calculatePrices(newDayType);
-  };
-  //CLALC THE DAY PRICE
-  const calculatePrices = (dayType) => {
-    if (dayType === 'Weekend') {
-      setPrices({ night: 230, afternoon: 125 });
+    const dateKey = `${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  
+    if (specialDates[dateKey]) {
+      const { dayType, prices } = specialDates[dateKey];
+      setDayType(dayType);
+      setPrices(prices);
     } else {
-      // setPrices({ night: 190, afternoon: 95 });
-      setPrices({ night: 190, afternoon: 1 });
+      const newDayType = day === 0 || day === 6 || day === 5 ? "Weekend" : "Jour de la semaine";
+      setDayType(newDayType);
+      calculatePrices(newDayType);
+    }
+  };
+  
+  const calculatePrices = (dayType) => {
+    switch (dayType) {
+      case "Weekend":
+        setPrices({ night: 230, afternoon: 125 });
+        break;
+      case "Jour de la semaine":
+        setPrices({ night: 190, afternoon: 95 });
+        break;
+      case "Valentine":
+        setPrices({ night: 250, afternoon: 150 }); // Special prices for Valentine's Day
+        break;
+      default:
+        setPrices({ night: 190, afternoon: 95 }); // Default to weekday prices
     }
   };
 
@@ -555,52 +592,109 @@ function Form({ stripePromise }) {
 
 
 
+  // const handleAddDate = () => {
+  //   // Ensure a date and at least one option are selected
+  //   if (!startDate || option.length === 0) {
+  //     alert("Veuillez sélectionner une date et au moins une option avant d'ajouter.");
+  //     return;
+  //   }
+
+  //   // Determine the day type (weekend or weekday)
+  //   const day = startDate.getDay();
+  //   const dayType = day === 0 || day === 5 || day === 6 ? 'Weekend' : 'Jour de la semaine';
+
+  //   // Calculate prices based on the day type
+  //   const prices = dayType === 'Weekend' ? { night: 230, afternoon: 125 } : { night: 190, afternoon: 95 }; //95
+
+  //   // Check if the selected date already exists in addedDates
+  //   const existingDateIndex = addedDates.findIndex(
+  //     (addedDate) => addedDate.date.toDateString() === startDate.toDateString()
+  //   );
+
+  //   if (existingDateIndex !== -1) {
+  //     // If the date already exists, merge the options
+  //     const updatedAddedDates = [...addedDates];
+  //     const existingOptions = updatedAddedDates[existingDateIndex].options;
+
+  //     // Add the new options to the existing ones (avoid duplicates)
+  //     option.forEach((newOption) => {
+  //       if (!existingOptions.includes(newOption)) {
+  //         existingOptions.push(newOption);
+  //       }
+  //     });
+
+  //     // Update the state with the merged options
+  //     setAddedDates(updatedAddedDates);
+  //   } else {
+  //     // If the date does not exist, add a new entry with prices
+  //     setAddedDates([
+  //       ...addedDates,
+  //       { date: startDate, options: option, prices },
+  //     ]);
+  //   }
+
+  //   // Reset to allow selecting a new date
+  //   setIsDateSelected(false);
+  //   setStartDate(new Date());
+  //   setOption([]);
+  // };
+
+
   const handleAddDate = () => {
     // Ensure a date and at least one option are selected
     if (!startDate || option.length === 0) {
       alert("Veuillez sélectionner une date et au moins une option avant d'ajouter.");
       return;
     }
-
-    // Determine the day type (weekend or weekday)
-    const day = startDate.getDay();
-    const dayType = day === 0 || day === 5 || day === 6 ? 'Weekend' : 'Jour de la semaine';
-
-    // Calculate prices based on the day type
-    const prices = dayType === 'Weekend' ? { night: 230, afternoon: 125 } : { night: 190, afternoon: 1 }; //95
-
+  
+    // Build a date key in MM-DD format
+    const dateKey = `${String(startDate.getMonth() + 1).padStart(2, "0")}-${String(startDate.getDate()).padStart(2, "0")}`;
+  
+    // Determine prices and day type based on special dates or regular logic
+    let prices;
+    let dayType;
+    if (specialDates[dateKey]) {
+      dayType = specialDates[dateKey].dayType;
+      prices = specialDates[dateKey].prices;
+    } else {
+      const day = startDate.getDay();
+      dayType = day === 0 || day === 5 || day === 6 ? 'Weekend' : 'Jour de la semaine';
+      prices = dayType === 'Weekend' 
+        ? { night: 230, afternoon: 125 } 
+        : { night: 190, afternoon: 95 };
+    }
+  
     // Check if the selected date already exists in addedDates
     const existingDateIndex = addedDates.findIndex(
       (addedDate) => addedDate.date.toDateString() === startDate.toDateString()
     );
-
+  
     if (existingDateIndex !== -1) {
       // If the date already exists, merge the options
       const updatedAddedDates = [...addedDates];
       const existingOptions = updatedAddedDates[existingDateIndex].options;
-
-      // Add the new options to the existing ones (avoid duplicates)
       option.forEach((newOption) => {
         if (!existingOptions.includes(newOption)) {
           existingOptions.push(newOption);
         }
       });
-
-      // Update the state with the merged options
       setAddedDates(updatedAddedDates);
     } else {
-      // If the date does not exist, add a new entry with prices
+      // If the date does not exist, add a new entry with the determined prices
       setAddedDates([
         ...addedDates,
         { date: startDate, options: option, prices },
       ]);
     }
-
+  
     // Reset to allow selecting a new date
     setIsDateSelected(false);
     setStartDate(new Date());
     setOption([]);
   };
+
+
+  
   //Delete selected date 
   const handleDeleteDate = (index) => {
     // Create a copy of addedDates and remove the entry at the specified index

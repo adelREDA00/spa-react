@@ -7,7 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 
 // This is your test publishable API key from Stripe
-const stripePromise = loadStripe("pk_live_51Q1roLCzmHkB4qT7kOc0OviXrIuRYjBnhXf1kQrosS27XCOQnDkqkD8XRiqoRr0LZ3V8JfMoU5CbIg9bRQNJMPmF00Ne2IB13h");
+const stripePromise = loadStripe("pk_test_51Q1roLCzmHkB4qT7sKvfinQdaPMJhJjX1Z5St5SiNcBO3NxRGm2jdPxwQhY6i5YqTE595jBTRBX1t3uR6yYBAv5600mASOxPtu");
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
