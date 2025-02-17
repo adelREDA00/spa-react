@@ -198,6 +198,82 @@ function Form({ stripePromise }) {
   //SHEETS 
   const [includeSheets, setIncludeSheets] = useState(false);
 
+  //COUPONS
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [promoApplied, setPromoApplied] = useState(false);
+
+  const validCodes = ["FREEBOX", "DISCOUNT50"]; // Example valid codes
+
+  const handleApplyPromo = async () => {
+    if (!promoCode.trim()) {
+      alert("Veuillez entrer un code promo.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${URL}/checkPromo`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          promoCode: promoCode.trim().toUpperCase() // Normalize the code
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Échec de la validation du code promo");
+      }
+
+      if (data.valid) {
+        const loveBox = boxes.find((box) => box.name === "Love Box");
+
+        if (!loveBox) {
+          throw new Error("Love Box n'est pas disponible dans la sélection actuelle");
+        }
+
+        console.log(loveBox);
+
+        const loveBoxIndex = boxes.indexOf(loveBox);
+
+        // Add the Love Box for free
+        setCheckedItems((prevState) => ({
+          ...prevState,
+          [loveBoxIndex]: true, // Mark the Love Box as selected
+        }));
+
+        // Set the Love Box price to 0 (free)
+        const updatedBoxes = boxes.map((box, index) => {
+          if (index === loveBoxIndex) {
+            return { ...box, price: 0 }; // Set price of Love Box to 0
+          }
+          return box;
+        });
+
+        // Update the boxes in state
+        setBoxes(updatedBoxes);
+
+        setPromoApplied(true);
+        alert("Succès ! Love Box a été ajoutée gratuitement.");
+      } else {
+        alert(data.message || "Code promo invalide ou expiré");
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'application du code promo :", error);
+      alert(error.message || "Une erreur est survenue lors de l'application du code promo");
+    } finally {
+      setShowPopup(false);
+      setPromoCode("");
+    }
+  };
+
+
+
+
 
   //BOXES LIST 
   const [boxes, setBoxes] = useState([]);
@@ -207,6 +283,12 @@ function Form({ stripePromise }) {
   const [checkedItems, setCheckedItems] = useState([]); // Now an array of selected box IDs
 
   const handleBoxChange = (selectedBox, index) => {
+
+    if (promoApplied && boxes[index].name === "Love Box") {
+      return; // Prevent unchecking the Love Box
+    }
+
+
     setCheckedItems(prevState => {
       // If the box is already checked, uncheck it (remove it from the selected boxes)
       if (prevState[index]) {
@@ -427,22 +509,6 @@ function Form({ stripePromise }) {
 
 
 
-  // //GET THE DATE TYPE WEEKEND OR WEE-KDAY
-  // const determineDayType = (date) => {
-  //   const day = date.getDay();
-  //   const newDayType = day === 0 || day === 6 || day === 5 ? 'Weekend' : 'Jour de la semaine';
-  //   setDayType(newDayType);
-  //   calculatePrices(newDayType);
-  // };
-  // //CLALC THE DAY PRICE
-  // const calculatePrices = (dayType) => {
-  //   if (dayType === 'Weekend') {
-  //     setPrices({ night: 230, afternoon: 125 });
-  //   } else {
-  //     // setPrices({ night: 190, afternoon: 95 });
-  //     setPrices({ night: 190, afternoon: 95 });
-  //   }
-  // };
 
 
   const specialDates = {
@@ -483,111 +549,6 @@ function Form({ stripePromise }) {
 
 
 
-  // //prepare the booknig data before sending it to the strip-comp
-  // const prepareBookingData = async () => {
-  //   // Adjust dates for timezone offset
-  //   const adjustedDates = addedDates.map(({ date, options, prices }) => ({
-  //     date: new Date(date.getTime() - date.getTimezoneOffset() * 60000), // Adjust for timezone
-  //     options, // Include selected options (e.g., "Nuit", "Après-midi")
-  //     prices, // Include prices for the options
-  //   }));
-
-  //   // Ensure all required fields are filled
-  //   if (!name || !familyName || !email || !phone || !addedDates || !total) {
-  //     setError("Please complete all required fields before proceeding.");
-  //     return null;
-  //   }
-
-  //   // Step 1: Prepare FormData for the images upload
-  //   const formData = new FormData();
-  //   uploadPhotosPerson1.forEach((file) => formData.append("photos", file));
-  //   uploadPhotosPerson2.forEach((file) => formData.append("photos", file));
-
-  //   // Step 2: Upload images to the server
-  //   let uploadedImages;
-  //   try {
-  //     const response = await api.uploadPhotoFromDevice(formData); // Assuming this API handles the upload
-  //     if (!response || !Array.isArray(response)) {
-  //       throw new Error("Failed to upload files or response is invalid");
-  //     }
-  //     uploadedImages = response; // Assuming this returns the uploaded image URLs
-  //   } catch (error) {
-  //     console.error("Image Upload Error:", error.message);
-  //     setError("Failed to upload images. Please try again.");
-  //     return null;
-  //   }
-
-  //   // Step 3: Add metadata to each image URL (from the uploaded images)
-  //   const idPhotosPerson1 = uploadedImages
-  //     .slice(0, uploadPhotosPerson1.length)
-  //     .map((url) => ({ url, person: 1 })); // Add person: 1 metadata
-  //   const idPhotosPerson2 = uploadedImages
-  //     .slice(uploadPhotosPerson1.length)
-  //     .map((url) => ({ url, person: 2 })); // Add person: 2 metadata
-
-  //   // Combine images from both persons into a single array
-  //   const idPhotos = [...idPhotosPerson1, ...idPhotosPerson2];
-
-  //   // Collect the selected box IDs based on the checkedItems state
-  //   const selectedBoxIds = Object.keys(checkedItems)
-  //     .map(index => {
-  //       const box = boxes[index];
-  //       return box ? box._id : null; // Ensure that the box exists
-  //     })
-  //     .filter(id => id !== null); // Filter out null values in case of invalid boxes
-
-  //   // Step 4: Consolidate all booking data into one object
-  //   const bookingData = {
-  //     place: placeId,
-  //     dates: adjustedDates, // Include the adjusted dates with options and prices
-  //     price: parseFloat(total), // Total price
-  //     name,
-  //     familyName,
-  //     email,
-  //     address,
-  //     phone,
-  //     nameTwo,
-  //     familyNameTwo,
-  //     emailTwo,
-  //     addressTwo,
-  //     phoneTwo,
-  //     idPhotos, // Combined images with metadata
-  //     boxes: selectedBoxIds,
-  //     includeSheets, // Include the sheets option
-  //     total: parseFloat(total),
-  //     paymentStatus: "pending", // Set payment status to pending initially
-  //   };
-
-  //   // Step 5: Send the booking data to the backend to create the booking
-  //   try {
-  //     const bookingResponse = await fetch(`${URL}/place/booking/${placeId}`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(bookingData),
-  //     });
-
-  //     if (!bookingResponse.ok) {
-  //       throw new Error("Failed to create booking on the server");
-  //     }
-
-  //     const booking = await bookingResponse.json();
-  //     if (!booking || !booking._id) {
-  //       throw new Error("Invalid booking response from the server");
-  //     }
-
-  //     console.log("Booking created successfully:", booking);
-
-  //     // You can now handle the next steps (like redirecting, showing success, etc.)
-  //     return booking; // You can use this object later if needed
-
-  //   } catch (error) {
-  //     console.error("Booking Creation Error:", error.message);
-  //     setError("Failed to create the booking. Please try again.");
-  //     return null;
-  //   }
-  // };
 
 
 
@@ -718,53 +679,6 @@ function Form({ stripePromise }) {
 
 
 
-  // const handleAddDate = () => {
-  //   // Ensure a date and at least one option are selected
-  //   if (!startDate || option.length === 0) {
-  //     alert("Veuillez sélectionner une date et au moins une option avant d'ajouter.");
-  //     return;
-  //   }
-
-  //   // Determine the day type (weekend or weekday)
-  //   const day = startDate.getDay();
-  //   const dayType = day === 0 || day === 5 || day === 6 ? 'Weekend' : 'Jour de la semaine';
-
-  //   // Calculate prices based on the day type
-  //   const prices = dayType === 'Weekend' ? { night: 230, afternoon: 125 } : { night: 190, afternoon: 95 }; //95
-
-  //   // Check if the selected date already exists in addedDates
-  //   const existingDateIndex = addedDates.findIndex(
-  //     (addedDate) => addedDate.date.toDateString() === startDate.toDateString()
-  //   );
-
-  //   if (existingDateIndex !== -1) {
-  //     // If the date already exists, merge the options
-  //     const updatedAddedDates = [...addedDates];
-  //     const existingOptions = updatedAddedDates[existingDateIndex].options;
-
-  //     // Add the new options to the existing ones (avoid duplicates)
-  //     option.forEach((newOption) => {
-  //       if (!existingOptions.includes(newOption)) {
-  //         existingOptions.push(newOption);
-  //       }
-  //     });
-
-  //     // Update the state with the merged options
-  //     setAddedDates(updatedAddedDates);
-  //   } else {
-  //     // If the date does not exist, add a new entry with prices
-  //     setAddedDates([
-  //       ...addedDates,
-  //       { date: startDate, options: option, prices },
-  //     ]);
-  //   }
-
-  //   // Reset to allow selecting a new date
-  //   setIsDateSelected(false);
-  //   setStartDate(new Date());
-  //   setOption([]);
-  // };
-
 
   const handleAddDate = () => {
     // Ensure a date and at least one option are selected
@@ -861,7 +775,9 @@ function Form({ stripePromise }) {
             name: name, // Replace with the actual user's name from your state or props
             familyName: familyName, // Replace with the actual user's family name from your state or props
             email: email,// Replace with the actual user's email from your state or props
-            bookingId: bookingId
+            bookingId: bookingId,
+            promoApplied: promoApplied ? "true" : "false", // Note: metadata values are strings
+
           });
           setBookingFeeClientSecret(response.data.bookingFeeClientSecret);
           // setSecurityDepositClientSecret(response.data.securityDepositClientSecret);
@@ -1271,6 +1187,16 @@ function Form({ stripePromise }) {
                   {error && <div>Error loading boxes: {error}</div>}
                   {!loading && boxes.length > 0 ? (
                     <section className="mains">
+                      {/* Promo Button */}
+                      <div className="promo-container">
+
+                        <button className="love-promo-btn" onClick={() => setShowPopup(true)}>
+                          <span className="heart-icon">❤️</span>
+                          Code Promo
+                          <span className="heart-icon">❤️</span>
+                        </button>
+                      </div>
+
                       {boxes.map((box, index) => (
                         <article className="menu-item" key={box._id}>
                           <h3 className="mains-name">{box.name}</h3>
@@ -1318,6 +1244,39 @@ function Form({ stripePromise }) {
                           </p>
                         </article>
                       ))}
+
+                      {showPopup && (
+                        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center">
+                          <div className="bg-gradient-to-br from-[#C84B31] to-[#6A1814] p-6 rounded-xl shadow-xl">
+                            <h2 className="text-xl font-semibold mb-3 text-white tracking-wide">
+                            Code Promo
+                            </h2>
+                            <input
+                              type="text"
+                              className="p-3 w-full mb-4 rounded-md bg-[#FAF3F0] text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#D26051] transition"
+                              placeholder="Saisissez votre code"
+                              value={promoCode}
+                              onChange={(e) => setPromoCode(e.target.value)}
+                            />
+                            <div className="flex justify-end gap-3">
+                              <button
+                                onClick={() => setShowPopup(false)}
+                                className="px-5 py-2 text-white rounded-lg bg-transparent hover:bg-[#EFAEAE] hover:text-[#6A1814] transition duration-200"
+                              >
+                                Annuler
+                              </button>
+                              <button
+                                onClick={handleApplyPromo}
+                                className="px-5 py-2 bg-[#EFAEAE] text-[#6A1814] font-semibold rounded-lg hover:bg-[#6A1814] hover:text-white transition duration-200"
+                              >
+                                Valider
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
+
+                      )}
                     </section>
                   ) : !loading && (
                     <div className="flex items-center justify-center border rounded-2xl gap-2 py-3 cursor-pointer">
@@ -1648,7 +1607,7 @@ function Form({ stripePromise }) {
                           {Object.keys(checkedItems).length > 0 ? (
                             Object.keys(checkedItems).map((index) => (
                               <div key={boxes[index]._id}>
-                                <dt>{boxes[index].name}</dt>
+                                <dt>{boxes[index].name} <span className="text-gray-400 text-xs">{boxes[index].price}€</span>  </dt>
                                 <dd>
                                   <span>
                                     {Array.isArray(boxes[index].items) ? boxes[index].items.join(', ') : 'No items available'}

@@ -81,6 +81,8 @@ const PaymentComponent = ({ isLoadingStripe, messageStripe, paymentElementOption
           </p>
         </div>
 
+        <br />
+
 
         
         <div className="paiment__info">

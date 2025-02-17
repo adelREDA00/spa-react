@@ -146,13 +146,10 @@ function BookingPlaces() {
                   />
                 </div>
               ) : (
-                <div className="flex flex-col items-center mx-auto py-8 px-4">
-                  <h2 className="text-xl font-semibold mb-1">
-                    Something went wrong.
-                  </h2>
-                  <p className="text-center text-gray-500">
-                    The owner might have deleted this place. Try again later or
-                    contact us.
+                <div className="flex max-w-full h-46 md:max-w-[320px] md:h-44 bg-gray-300 shrink-0 ">
+              
+                  <p  className="md:aspect-square md:w-[240px] lg:w-[280px]">
+                  ❌ Échec du téléchargement de l’image.
                   </p>
                 </div>
               )}
