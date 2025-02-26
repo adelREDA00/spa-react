@@ -46,6 +46,9 @@ function Form({ stripePromise }) {
   const [isBooking, setIsBooking] = useState(false);
   const [bookingId, setBookingId] = useState(null);
 
+
+  //FETCHING DATES 
+
   useEffect(() => {
     let isMounted = true;
 
@@ -170,7 +173,8 @@ function Form({ stripePromise }) {
   const [stepNum, setStepNum] = useState(0);
   const [selectedAddons, setSelectedAddons] = useState([]);
 
-
+  //SHEETS 
+  const [includeSheets, setIncludeSheets] = useState(false);
 
 
   const [planPrices, setPlanPrices] = useState({
@@ -195,16 +199,66 @@ function Form({ stripePromise }) {
     });
   }, []);
 
-  //SHEETS 
-  const [includeSheets, setIncludeSheets] = useState(false);
+
+  //BOXES LIST 
+  const [boxes, setBoxes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedBox, setSelectedBox] = useState(null);
+  const [checkedItems, setCheckedItems] = useState([]); // Now an array of selected box IDs
+
+
+  //BOXES SELECTION FUNC - 
+
+  const handleBoxChange = (selectedBox, index) => {
+
+    if (promoApplied && boxes[index].name === "Love Box") {
+      return; // Prevent unchecking the Love Box
+    }
+
+
+    setCheckedItems(prevState => {
+      // If the box is already checked, uncheck it (remove it from the selected boxes)
+      if (prevState[index]) {
+        const newState = { ...prevState };
+        delete newState[index]; // Remove this box from the selected list
+        return newState;
+      } else {
+        // Otherwise, check the box by adding it to the selected boxes
+        return { ...prevState, [index]: true };
+      }
+    });
+
+    console.log(checkedItems);
+
+  };
+  //FETCH THE BOXES 
+  useEffect(() => {
+    // Fetch boxes on component mount
+    const fetchBoxes = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const data = await api.getBoxes();
+        setBoxes(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBoxes();
+  }, []);
+
+
 
   //COUPONS
 
   const [showPopup, setShowPopup] = useState(false);
   const [promoCode, setPromoCode] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
-
-  const validCodes = ["FREEBOX", "DISCOUNT50"]; // Example valid codes
 
   const handleApplyPromo = async () => {
     if (!promoCode.trim()) {
@@ -272,64 +326,7 @@ function Form({ stripePromise }) {
   };
 
 
-
-
-
-  //BOXES LIST 
-  const [boxes, setBoxes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [selectedBox, setSelectedBox] = useState(null);
-  const [checkedItems, setCheckedItems] = useState([]); // Now an array of selected box IDs
-
-  const handleBoxChange = (selectedBox, index) => {
-
-    if (promoApplied && boxes[index].name === "Love Box") {
-      return; // Prevent unchecking the Love Box
-    }
-
-
-    setCheckedItems(prevState => {
-      // If the box is already checked, uncheck it (remove it from the selected boxes)
-      if (prevState[index]) {
-        const newState = { ...prevState };
-        delete newState[index]; // Remove this box from the selected list
-        return newState;
-      } else {
-        // Otherwise, check the box by adding it to the selected boxes
-        return { ...prevState, [index]: true };
-      }
-    });
-
-    console.log(checkedItems);
-
-  };
-
-
-
-
-
-
-
-
-  useEffect(() => {
-    // Fetch boxes on component mount
-    const fetchBoxes = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const data = await api.getBoxes();
-        setBoxes(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBoxes();
-  }, []);
+  // HANDLE NEXT BTN 
 
   const handleNext = async () => {
     // For step 2 validations remain unchanged.
@@ -369,6 +366,7 @@ function Form({ stripePromise }) {
 
 
 
+  // HANDLE PREV BTN 
 
   const handlePrev = () => {
     if (stepNum > 0) {
@@ -376,10 +374,7 @@ function Form({ stripePromise }) {
     }
   };
 
-  const handleConfirmBooking = () => {
-    // Perform booking confirmation logic here
-    setShowModal(false); // Close modal after confirmation
-  };
+  // OPTION SELECTION FUNC  
 
   const handlePlanSelect = (plan) => {
 
@@ -401,32 +396,22 @@ function Form({ stripePromise }) {
   };
 
 
-
-
-  const handleAddonToggle = (addon) => {
-    setSelectedAddons((prevAddons) => {
-      const exists = prevAddons.find((a) => a.name === addon.name);
-      if (exists) {
-        return prevAddons.filter((a) => a.name !== addon.name);
-      } else {
-        return [...prevAddons, addon];
-      }
-    });
-  };
-
   //SUCC MSG MODAL
 
   const closeSuccModal = () => {
     setOptionSucc(false);
   };
 
-  const toggleBillingDuration = () => {
-    const newDuration = billingDuration === 'monthly' ? 'yearly' : 'monthly';
-    setBillingDuration(newDuration);
-  };
+  // BILL TOGGEL FUNC NO NEED FOR THE MOMENT 
+
+  // const toggleBillingDuration = () => {
+  //   const newDuration = billingDuration === 'monthly' ? 'yearly' : 'monthly';
+  //   setBillingDuration(newDuration);
+  // };
 
 
   // CALC TOTAL
+
   const calculateTotal = () => {
     let total = 0;
 
@@ -463,7 +448,7 @@ function Form({ stripePromise }) {
   // Recalculate total whenever selectedBox or addedDates changes
   useEffect(() => {
     calculateTotal();
-  }, [selectedBox, addedDates, includeSheets]);
+  }, [checkedItems, addedDates, includeSheets]);
 
   // DATE SELECT AND GET THE POSSIBLE OPTIONS 
   const handleSelect = (ranges) => {
@@ -507,14 +492,13 @@ function Form({ stripePromise }) {
     setAvailableOptions(optionsLeft);
   };
 
-
-
-
-
+  // specialDates prices  
   const specialDates = {
     "02-14": { dayType: "Valentine", prices: { night: 250, afternoon: 150 } },
     // Add more special dates as needed
   };
+
+  // DETERMINE THE DAY TYPE FUNC    
 
   const determineDayType = (date) => {
     const day = date.getDay();
@@ -531,6 +515,9 @@ function Form({ stripePromise }) {
     }
   };
 
+
+  // calculatePrices prices based on THE DAY TYPE FUNC 
+  
   const calculatePrices = (dayType) => {
     switch (dayType) {
       case "Weekend":
@@ -551,6 +538,7 @@ function Form({ stripePromise }) {
 
 
 
+  // prepareBookingData FUNC 
 
   const prepareBookingData = async () => {
     // Adjust dates for timezone offset
@@ -679,6 +667,7 @@ function Form({ stripePromise }) {
 
 
 
+  // handleAddDate FUNC 
 
   const handleAddDate = () => {
     // Ensure a date and at least one option are selected
@@ -742,7 +731,6 @@ function Form({ stripePromise }) {
     setAddedDates(updatedAddedDates);
   };
 
-  console.log("addedDates", addedDates);
   const selectionRange = {
     startDate: startDate,
     endDate: startDate,
@@ -1196,6 +1184,7 @@ function Form({ stripePromise }) {
                           <span className="heart-icon">❤️</span>
                         </button>
                       </div>
+                      <br />
 
                       {boxes.map((box, index) => (
                         <article className="menu-item" key={box._id}>
@@ -1560,8 +1549,7 @@ function Form({ stripePromise }) {
                             <span>
                               {options
                                 .map((option) => (option === "Nuit" ? prices.night : prices.afternoon))
-                                .reduce((acc, price) => acc + price, 0)}
-                              €
+                                .reduce((acc, price) => acc + price, 0)} €
                             </span>
                           </div>
                         </summary>
@@ -1637,7 +1625,7 @@ function Form({ stripePromise }) {
                             <small>{includeSheets ? 'Inclus' : 'Non inclus'}</small>
                           </h3>
                           <span>
-                            {includeSheets ? '20' : '0'}€
+                            {includeSheets ? '20' : '0'} €
                           </span>
                         </div>
                       </summary>
