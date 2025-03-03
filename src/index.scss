@@ -920,27 +920,44 @@ img {
 
 
 // add date&option button
-.add-plus-button{
-  padding: 10px 20px;
-  width: fit-content;
-  margin: 0 auto;
-  cursor: pointer;
-  background: #DDFFDE;
-  border: 1px solid #08581d0e;
-  color: #08581D;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 .add-date-button {
   background: #DDFFDE;
-  border: 1px solid #08581d0e;
   color: #08581D;
   padding: 10px 20px;
+  cursor: pointer;
   border: none;
+  border-radius: 5px; /* Slightly rounded corners */
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Space between text and icon */
+  width: fit-content;
+  margin: 0 auto;
+
+}
+
+
+.add-another-date-button {
+  background-color: #007bff; /* Blue to contrast with the light green */
+  color: white; /* White text for readability */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px; /* Slightly rounded corners */
   cursor: pointer;
   font-size: 16px;
-  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Space between text and icon */
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.add-another-date-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+.list-dates{
+  color:#2C3E50 ;
 }
 
 

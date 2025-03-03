@@ -178,8 +178,8 @@ function Form({ stripePromise }) {
 
 
   const [planPrices, setPlanPrices] = useState({
-    monthly: [95, 190],//95
-    yearly: [230, 125],
+    monthly: [95, 152],//190
+    yearly: [184, 125],
   });
   const [addonPrices, setAddonPrices] = useState({
     monthly: [1, 2],
@@ -190,8 +190,8 @@ function Form({ stripePromise }) {
   useEffect(() => {
     // Fetch initial plan and addon prices
     setPlanPrices({
-      monthly: [95, 190],//95
-      yearly: [230, 125],
+      monthly: [95, 152],//95
+      yearly: [184, 125],
     });
     setAddonPrices({
       monthly: [1, 2],
@@ -517,20 +517,20 @@ function Form({ stripePromise }) {
 
 
   // calculatePrices prices based on THE DAY TYPE FUNC 
-  
+
   const calculatePrices = (dayType) => {
     switch (dayType) {
       case "Weekend":
-        setPrices({ night: 230, afternoon: 125 });
+        setPrices({ night: 184, afternoon: 125 });
         break;
       case "Jour de la semaine":
-        setPrices({ night: 190, afternoon: 95 });
+        setPrices({ night: 152, afternoon: 95 });
         break;
       case "Valentine":
         setPrices({ night: 250, afternoon: 150 }); // Special prices for Valentine's Day
         break;
       default:
-        setPrices({ night: 190, afternoon: 95 }); // Default to weekday prices
+        setPrices({ night: 152, afternoon: 95 }); // Default to weekday prices
     }
   };
 
@@ -689,8 +689,8 @@ function Form({ stripePromise }) {
       const day = startDate.getDay();
       dayType = day === 0 || day === 5 || day === 6 ? 'Weekend' : 'Jour de la semaine';
       prices = dayType === 'Weekend'
-        ? { night: 230, afternoon: 125 }
-        : { night: 190, afternoon: 95 };
+        ? { night: 184, afternoon: 125 }
+        : { night: 152, afternoon: 95 };
     }
 
     // Check if the selected date already exists in addedDates
@@ -818,7 +818,8 @@ function Form({ stripePromise }) {
               <form className="active" id="form" >
                 <h3 className="main__title">Choisissez la Date et l'Heure</h3>
                 <p className="description">
-                  rouge = complet , jaune = partiellement réservé.
+                Choisissez une date et une option (Nuit, Après-midi), puis cliquez sur "Confirmer cette date". Répétez avec "Ajouter une autre date" pour plusieurs jours.
+
                 </p>
                 <ul className="list">
                   <li className="list__item clndrContainer">
@@ -849,7 +850,7 @@ function Form({ stripePromise }) {
                   </li>
 
                   <p className="description">
-                    Sélectionnez votre option
+                  Choix du {startDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} 
                   </p>
 
                   {isDateSelected && (
@@ -859,7 +860,7 @@ function Form({ stripePromise }) {
                           availableOptions.map((plan, index) => (
                             <div
                               key={index}
-                              className={`plan__card card borderCard ${option.includes(plan) ? 'selected' : ''
+                              className={`plan__card card borderCard  ${option.includes(plan) ? 'selected' : ''
                                 }`}
                               onClick={() =>
                                 handlePlanSelect({
@@ -882,11 +883,13 @@ function Form({ stripePromise }) {
                                     {plan === 'Nuit' ? <MdNightlightRound className="Icon-DayNight" /> : <IoIosSunny className="Icon-DayNight" />}
                                     {plan}
                                   </span>
-                                  <span className="price-amount">
-                                    {plan === 'Nuit' ? `${prices.night}€` : `${prices.afternoon}€`}
-                                  </span>
+                                 
                                 </p>
                               </div>
+
+                              <span className="price-amount">
+                                    {plan === 'Nuit' ? `${prices.night}€` : `${prices.afternoon}€`}
+                                  </span>
                             </div>
                           ))
                         ) : (
@@ -899,14 +902,14 @@ function Form({ stripePromise }) {
                   {/* Add Button (Conditional Rendering) */}
                   {isDateSelected && (
                     <button type="button" onClick={handleAddDate} className="add-date-button">
-                      Confirmer la Date
+                      Confirmer cette date
                     </button>
                   )}
 
                   {/* Call-to-Action Button (When Dates Are Added) */}
                   {addedDates.length > 0 && !isDateSelected && (
-                    <div onClick={() => setIsDateSelected(true)} className="add-plus-button">
-                      Ajouter  <IoAdd size={20} />
+                    <div onClick={() => setIsDateSelected(true)} className="add-another-date-button">
+                      Ajouter une autre date  <IoAdd size={20} />
                     </div>
                   )}
                   <br />
@@ -916,7 +919,7 @@ function Form({ stripePromise }) {
                     .slice() // Create a shallow copy
                     .reverse() // Reverse the copy
                     .map(({ date, options, prices }, index) => (
-                      <li className="list__item added__Dates" key={index}>
+                      <li className="list__item added__Dates p-4 bg-gray-100 rounded-lg shadow-sm " key={index}>
                         <p className="flex justify-between items-center mb-1">
                           <span className="text-sm font-medium text-gray-700">
                             {date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
@@ -928,11 +931,11 @@ function Form({ stripePromise }) {
                             <IoClose className='delete' size={15} />
                           </span>
                         </p>
-                        <div className="plan__card_container" id="plan-cards">
+                        <div className="plan__card_container list-dates " id="plan-cards">
                           {options.map((plan, idx) => (
                             <div
                               key={idx}
-                              className={`plan__card card borderCard selected`}
+                              className={`plan__card card borderCard bg-gradient-to-r from-gray-200 to-gray-300`}
                             >
                               <div className="card__img">
                                 <div className="time-range-container">
@@ -948,18 +951,19 @@ function Form({ stripePromise }) {
                                     {plan === 'Nuit' ? <MdNightlightRound className="Icon-DayNight" /> : <IoIosSunny className="Icon-DayNight" />}
                                     {plan}
                                   </span>
-                                  <span className="price-amount">
-                                    {plan === 'Nuit' ? `${prices.night}€` : `${prices.afternoon}€`}
-                                  </span>
+                                 
                                 </p>
                               </div>
 
-
+                              <span className="price-amount">
+                                    {plan === 'Nuit' ? `${prices.night}€` : `${prices.afternoon}€`}
+                                  </span>
                             </div>
                           ))}
                         </div>
                       </li>
                     ))}
+
                 </ul>
               </form>
 
@@ -1238,7 +1242,7 @@ function Form({ stripePromise }) {
                         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center">
                           <div className="bg-gradient-to-br from-[#C84B31] to-[#6A1814] p-6 rounded-xl shadow-xl">
                             <h2 className="text-xl font-semibold mb-3 text-white tracking-wide">
-                            Code Promo
+                              Code Promo
                             </h2>
                             <input
                               type="text"
@@ -1560,8 +1564,10 @@ function Form({ stripePromise }) {
                               <dd>
                                 {options.map((option, idx) => (
                                   <span key={idx}>
-                                    {option} ({option === "Nuit" ? `${prices.night}€` : `${prices.afternoon}€`})
+                                    {option} <span className="text-gray-400 text-xs">({option === "Nuit" ? `${prices.night}€` : `${prices.afternoon}€`})</span>
                                     {idx < options.length - 1 ? ", " : ""}
+
+                              
                                   </span>
                                 ))}
                               </dd>

@@ -64,8 +64,8 @@ function PlacePageDetails({ place }) {
                 <h3 > <strong className="fornow" ><MdNightlightRound className="Icon-DayNightClient" /> Nuit</strong> </h3>
                     <p>Arrivée : 19:00</p>
                     <p>Départ : 11:00</p>
-                    <p  >Tarif week-end: <span className=" title-2" >230 €</span> </p>
-                    <p>Tarif semaine: <span className=" title-2" >190 €</span> </p>
+                    <p  >Tarif week-end: <span className=" title-2" >184 €</span> </p>
+                    <p>Tarif semaine: <span className=" title-2" >152 €</span> </p>
                     
                 </div>
 
