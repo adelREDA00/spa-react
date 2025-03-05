@@ -492,47 +492,51 @@ function Form({ stripePromise }) {
     setAvailableOptions(optionsLeft);
   };
 
-  // specialDates prices  
-  const specialDates = {
-    "02-14": { dayType: "Valentine", prices: { night: 250, afternoon: 150 } },
-    // Add more special dates as needed
-  };
+// specialDates prices
+const specialDates = {
+  "02-14": { dayType: "Valentine", prices: { night: 250, afternoon: 150 } },
+  "03-06": { dayType: "Special Thursday", prices: { night: 150, afternoon: 95 } },   // Thursday, March 6
+  "03-07": { dayType: "Special Friday", prices: { night: 150, afternoon: 125 } },   // Friday, March 7
+  "03-08": { dayType: "Special Saturday", prices: { night: 150, afternoon: 125 } }, // Saturday, March 8
+};
 
-  // DETERMINE THE DAY TYPE FUNC    
+// DETERMINE THE DAY TYPE FUNC
+const determineDayType = (date) => {
+  const day = date.getDay();
+  const dateKey = `${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
-  const determineDayType = (date) => {
-    const day = date.getDay();
-    const dateKey = `${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  if (specialDates[dateKey]) {
+    const { dayType, prices } = specialDates[dateKey];
+    setDayType(dayType);
+    setPrices(prices);
+  } else {
+    const newDayType = day === 0 || day === 6 || day === 5 ? "Weekend" : "Jour de la semaine";
+    setDayType(newDayType);
+    calculatePrices(newDayType);
+  }
+};
 
-    if (specialDates[dateKey]) {
-      const { dayType, prices } = specialDates[dateKey];
-      setDayType(dayType);
-      setPrices(prices);
-    } else {
-      const newDayType = day === 0 || day === 6 || day === 5 ? "Weekend" : "Jour de la semaine";
-      setDayType(newDayType);
-      calculatePrices(newDayType);
-    }
-  };
-
-
-  // calculatePrices prices based on THE DAY TYPE FUNC 
-
-  const calculatePrices = (dayType) => {
-    switch (dayType) {
-      case "Weekend":
-        setPrices({ night: 184, afternoon: 125 });
-        break;
-      case "Jour de la semaine":
-        setPrices({ night: 152, afternoon: 95 });
-        break;
-      case "Valentine":
-        setPrices({ night: 250, afternoon: 150 }); // Special prices for Valentine's Day
-        break;
-      default:
-        setPrices({ night: 152, afternoon: 95 }); // Default to weekday prices
-    }
-  };
+// calculatePrices prices based on THE DAY TYPE FUNC
+const calculatePrices = (dayType) => {
+  switch (dayType) {
+    case "Weekend":
+      setPrices({ night: 184, afternoon: 125 });
+      break;
+    case "Jour de la semaine":
+      setPrices({ night: 152, afternoon: 95 });
+      break;
+    case "Valentine":
+      setPrices({ night: 250, afternoon: 150 }); // Special prices for Valentine's Day
+      break;
+    case "Special Thursday": // Add support for new day types
+    case "Special Friday":
+    case "Special Saturday":
+      // No need to set prices here; specialDates handles it
+      break;
+    default:
+      setPrices({ night: 152, afternoon: 95 }); // Default to weekday prices
+  }
+};
 
 
 
