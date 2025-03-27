@@ -20,7 +20,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { IoAdd } from "react-icons/io5";
 import { IoClose } from "react-icons/io5";
 import imageCompression from 'browser-image-compression';
-
+import BookingProgressModal from './BookingProgressModal';
 axios.defaults.baseURL = "https://localhost:5000";
 axios.defaults.withCredentials = true;
 
@@ -326,6 +326,8 @@ function Form({ stripePromise }) {
   };
 
 
+
+
   // HANDLE NEXT BTN 
 
   const handleNext = async () => {
@@ -560,20 +562,27 @@ const calculatePrices = (dayType) => {
 
     // Define compression options
     const compressionOptions = {
-      maxSizeMB: 0.3, // Target ~300KB
-      maxWidthOrHeight: 1024, // Resize to 1024px max
-      initialQuality: 0.7, // 70% quality
+      maxSizeMB: 0.1, // Target ~100KB
+      maxWidthOrHeight: 800, // Resize to 800px max
+      initialQuality: 0.6, // 60% quality
       useWebWorker: true, // Faster compression
+      fileType: 'image/jpeg', // Force JPEG output
     };
 
     // Function to compress images while keeping original format
     const compressImages = async (files) => {
       return Promise.all(
         files.map(async (file) => {
-          if (file.size < 200 * 1024) {
-            return file; // Skip compression for small files
+          if (file.size < 100 * 1024) { // Skip if smaller than 100KB
+            return file;
           }
-          return await imageCompression(file, { ...compressionOptions, fileType: file.type });
+          try {
+            const compressedFile = await imageCompression(file, compressionOptions);
+            return compressedFile;
+          } catch (error) {
+            console.error("Compression error:", error);
+            return file; // Fallback to original if compression fails
+          }
         })
       );
     };
@@ -1730,6 +1739,8 @@ const calculatePrices = (dayType) => {
                   <MdNavigateNext style={{ marginLeft: '8px' }} />
                 </button>
               )}
+
+{isBooking && stepNum === 4 && <BookingProgressModal isOpen={isBooking} />}
             </div>
 
 
