@@ -156,11 +156,15 @@ function Form({ stripePromise }) {
   const [familyName, setFamilyName] = useState('');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [postalCode, setPostalCode] = useState('');
   const [phone, setPhone] = useState('');
   const [nameTwo, setNameTwo] = useState('');
   const [familyNameTwo, setFamilyNameTwo] = useState('');
   const [emailTwo, setEmailTwo] = useState('');
   const [addressTwo, setAddressTwo] = useState('');
+  const [cityTwo, setCityTwo] = useState('');
+  const [postalCodeTwo, setPostalCodeTwo] = useState('');
   const [phoneTwo, setPhoneTwo] = useState('');
   const [total, setTotal] = useState('');
   const [uploadPhotos, setUploadPhotos] = useState([]);
@@ -178,8 +182,8 @@ function Form({ stripePromise }) {
 
 
   const [planPrices, setPlanPrices] = useState({
-    monthly: [95, 152],//190
-    yearly: [184, 125],
+    monthly: [95, 190],//190
+    yearly: [230, 130],
   });
   const [addonPrices, setAddonPrices] = useState({
     monthly: [1, 2],
@@ -190,8 +194,8 @@ function Form({ stripePromise }) {
   useEffect(() => {
     // Fetch initial plan and addon prices
     setPlanPrices({
-      monthly: [95, 152],//95
-      yearly: [184, 125],
+      monthly: [95, 190],//95
+      yearly: [230, 130],
     });
     setAddonPrices({
       monthly: [1, 2],
@@ -522,10 +526,10 @@ const determineDayType = (date) => {
 const calculatePrices = (dayType) => {
   switch (dayType) {
     case "Weekend":
-      setPrices({ night: 184, afternoon: 125 });
+      setPrices({ night: 230, afternoon: 130 });
       break;
     case "Jour de la semaine":
-      setPrices({ night: 152, afternoon: 95 });
+      setPrices({ night: 190, afternoon: 95 });
       break;
     case "Valentine":
       setPrices({ night: 250, afternoon: 150 }); // Special prices for Valentine's Day
@@ -536,7 +540,7 @@ const calculatePrices = (dayType) => {
       // No need to set prices here; specialDates handles it
       break;
     default:
-      setPrices({ night: 152, afternoon: 95 }); // Default to weekday prices
+      setPrices({ night: 190, afternoon: 95 }); // Default to weekday prices
   }
 };
 
@@ -635,11 +639,15 @@ const calculatePrices = (dayType) => {
       familyName,
       email,
       address,
+      city,
+      postalCode,
       phone,
       nameTwo,
       familyNameTwo,
       emailTwo,
       addressTwo,
+      cityTwo,
+      postalCodeTwo,
       phoneTwo,
       idPhotos,
       boxes: selectedBoxIds,
@@ -702,8 +710,8 @@ const calculatePrices = (dayType) => {
       const day = startDate.getDay();
       dayType = day === 0 || day === 5 || day === 6 ? 'Weekend' : 'Jour de la semaine';
       prices = dayType === 'Weekend'
-        ? { night: 184, afternoon: 125 }
-        : { night: 152, afternoon: 95 };
+        ? { night: 230, afternoon: 130 }
+        : { night: 190, afternoon: 95 };
     }
 
     // Check if the selected date already exists in addedDates
@@ -1052,6 +1060,38 @@ const calculatePrices = (dayType) => {
                       required
                     />
                   </li>
+                  <li className="list__itemTwo">
+                    <div className="input__container">
+                      <div className="input__labe">
+                        <p className="label">Ville</p>
+                        <p className="warning"></p>
+                      </div>
+                      <input
+                        type="text"
+                        name="city"
+                        className="input"
+                        placeholder="e.g. Lyon"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="input__container">
+                      <div className="input__labe">
+                        <p className="label">Code Postal</p>
+                        <p className="warning"></p>
+                      </div>
+                      <input
+                        type="text"
+                        name="postalCode"
+                        className="input"
+                        placeholder="e.g. 69001"
+                        value={postalCode}
+                        onChange={(e) => setPostalCode(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </li>
                   <li className="list__item">
                     <div className="input__labe">
                       <p className="label">Téléphone</p>
@@ -1131,7 +1171,7 @@ const calculatePrices = (dayType) => {
                   </li>
                   <li className="list__item">
                     <div className="input__labe">
-                      <p className="label">Adresse <small><small>(Deuxième Personne)</small></small></p>
+                      <p className="label">Adresse <small>(Deuxième Personne)</small></p>
                       <p className="warning"></p>
                     </div>
                     <input
@@ -1143,6 +1183,38 @@ const calculatePrices = (dayType) => {
                       onChange={(e) => setAddressTwo(e.target.value)}
                       required
                     />
+                  </li>
+                  <li className="list__itemTwo">
+                    <div className="input__container">
+                      <div className="input__labe">
+                        <p className="label">Ville <small>(Deuxième Personne)</small></p>
+                        <p className="warning"></p>
+                      </div>
+                      <input
+                        type="text"
+                        name="cityTwo"
+                        className="input"
+                        placeholder="e.g. Lyon"
+                        value={cityTwo}
+                        onChange={(e) => setCityTwo(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="input__container">
+                      <div className="input__labe">
+                        <p className="label">Code Postal <small>(Deuxième Personne)</small></p>
+                        <p className="warning"></p>
+                      </div>
+                      <input
+                        type="text"
+                        name="postalCodeTwo"
+                        className="input"
+                        placeholder="e.g. 69001"
+                        value={postalCodeTwo}
+                        onChange={(e) => setPostalCodeTwo(e.target.value)}
+                        required
+                      />
+                    </div>
                   </li>
                   <li className="list__item">
                     <div className="input__labe">

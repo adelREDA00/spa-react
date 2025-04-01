@@ -24,11 +24,15 @@ function BookingDetails() {
   const [familyName, setFamilyName] = useState('');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [postalCode, setPostalCode] = useState('');
   const [phone, setPhone] = useState('');
   const [nameTwo, setNameTwo] = useState('');
   const [familyNameTwo, setFamilyNameTwo] = useState('');
   const [emailTwo, setEmailTwo] = useState('');
   const [addressTwo, setAddressTwo] = useState('');
+  const [cityTwo, setCityTwo] = useState('');
+  const [postalCodeTwo, setPostalCodeTwo] = useState('');
   const [phoneTwo, setPhoneTwo] = useState('');
   //payment
   const [paymentStatus, setPaymentStatus] = useState({ amount: 0, status: '' });
@@ -59,11 +63,15 @@ function BookingDetails() {
         setFamilyName(response.familyName || '');
         setEmail(response.email || '');
         setAddress(response.address || '');
+        setCity(response.city || '');
+        setPostalCode(response.postalCode || '');
         setPhone(response.phone || '');
         setNameTwo(response.nameTwo || '');
         setFamilyNameTwo(response.familyNameTwo || '');
         setEmailTwo(response.emailTwo || '');
         setAddressTwo(response.addressTwo || '');
+        setCityTwo(response.cityTwo || '');
+        setPostalCodeTwo(response.postalCodeTwo || '');
         setPhoneTwo(response.phoneTwo || '');
         setPaymentStatus(response.paymentStatus);
         setSecurityDeposit(response.securityDeposit);
@@ -366,25 +374,31 @@ function BookingDetails() {
                         className="input"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
-
                       />
                     </label>
-                    {/* <label className="label" for="city-state">
-                      <span className="my-1 block">City/State</span>
-                      <input type="text" className="input" value="California" id="city-state" />
-                    </label> */}
+                    <label className="label" for="city">
+                      <span className="my-1 block">Ville</span>
+                      <input
+                        type="text"
+                        className="input"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                      />
+                    </label>
                   </div>
 
-                  {/* <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                    <label className="label" for="country">
-                      <span className="my-1 block">Country</span>
-                      <input type="text" className="input" value="United States" id="country" />
+                  <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                    <label className="label" for="postal-code">
+                      <span className="my-1 block">Code Postal</span>
+                      <input
+                        type="text"
+                        className="input"
+                        value={postalCode}
+                        onChange={(e) => setPostalCode(e.target.value)}
+                      />
                     </label>
-                    <label className="label" for="zip-code">
-                      <span className="my-1 block">Zip Code</span>
-                      <input type="text" className="input" value="90011" id="zip-code" />
-                    </label>
-                  </div> */}
+                  </div>
+
                   {/* <div className="flex items-center justify-end gap-4">
                     <button
                       type="cancel"
@@ -432,7 +446,7 @@ function BookingDetails() {
 
                   <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                     <label className="label" for="street-address">
-                      <span className="my-1 block">Adresse <small>(Deuxième Personne)</small> </span>
+                      <span className="my-1 block">Adresse <small>(Deuxième Personne)</small></span>
                       <input
                         type="text"
                         className="input"
@@ -441,24 +455,30 @@ function BookingDetails() {
                         id="street-address"
                       />
                     </label>
-                    {/* <label className="label" for="city-state">
-                      <span className="my-1 block">City/State</span>
-                      <input type="text" className="input" value="California" id="city-state" />
-                    </label> */}
+                    <label className="label" for="city-two">
+                      <span className="my-1 block">Ville <small>(Deuxième Personne)</small></span>
+                      <input
+                        type="text"
+                        className="input"
+                        value={cityTwo}
+                        onChange={(e) => setCityTwo(e.target.value)}
+                      />
+                    </label>
                   </div>
 
-                  {/* <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                    <label className="label" for="country">
-                      <span className="my-1 block">Country</span>
-                      <input type="text" className="input" value="United States" id="country" />
+                  <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                    <label className="label" for="postal-code-two">
+                      <span className="my-1 block">Code Postal <small>(Deuxième Personne)</small></span>
+                      <input
+                        type="text"
+                        className="input"
+                        value={postalCodeTwo}
+                        onChange={(e) => setPostalCodeTwo(e.target.value)}
+                      />
                     </label>
-                    <label className="label" for="zip-code">
-                      <span className="my-1 block">Zip Code</span>
-                      <input type="text" className="input" value="90011" id="zip-code" />
-                    </label>
-                  </div> */}
-                  {/* 
-                  <div className="flex items-center justify-end gap-4">
+                  </div>
+
+                  {/* <div className="flex items-center justify-end gap-4">
                     <button
                       type="cancel"
                       className="btn border border-slate-300 "
