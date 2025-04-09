@@ -46,6 +46,7 @@ function Form({ stripePromise }) {
   const [isBooking, setIsBooking] = useState(false);
   const [bookingId, setBookingId] = useState(null);
 
+  const [validationErrors, setValidationErrors] = useState({});
 
   //FETCHING DATES 
 
@@ -335,6 +336,13 @@ function Form({ stripePromise }) {
   // HANDLE NEXT BTN 
 
   const handleNext = async () => {
+    // For step 1, validate the form
+    if (stepNum === 1) {
+      if (!validateStep1()) {
+        return; // Don't proceed if validation fails
+      }
+    }
+
     // For step 2 validations remain unchanged.
     if (stepNum === 2) {
       if (!selectedPlan.name) {
@@ -498,51 +506,51 @@ function Form({ stripePromise }) {
     setAvailableOptions(optionsLeft);
   };
 
-// specialDates prices
-const specialDates = {
-  "02-14": { dayType: "Valentine", prices: { night: 250, afternoon: 150 } },
-  "03-06": { dayType: "Special Thursday", prices: { night: 150, afternoon: 95 } },   // Thursday, March 6
-  "03-07": { dayType: "Special Friday", prices: { night: 150, afternoon: 125 } },   // Friday, March 7
-  "03-08": { dayType: "Special Saturday", prices: { night: 150, afternoon: 125 } }, // Saturday, March 8
-};
+  // specialDates prices
+  const specialDates = {
+    "02-14": { dayType: "Valentine", prices: { night: 250, afternoon: 150 } },
+    "03-06": { dayType: "Special Thursday", prices: { night: 150, afternoon: 95 } },   // Thursday, March 6
+    "03-07": { dayType: "Special Friday", prices: { night: 150, afternoon: 125 } },   // Friday, March 7
+    "03-08": { dayType: "Special Saturday", prices: { night: 150, afternoon: 125 } }, // Saturday, March 8
+  };
 
-// DETERMINE THE DAY TYPE FUNC
-const determineDayType = (date) => {
-  const day = date.getDay();
-  const dateKey = `${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  // DETERMINE THE DAY TYPE FUNC
+  const determineDayType = (date) => {
+    const day = date.getDay();
+    const dateKey = `${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
-  if (specialDates[dateKey]) {
-    const { dayType, prices } = specialDates[dateKey];
-    setDayType(dayType);
-    setPrices(prices);
-  } else {
-    const newDayType = day === 0 || day === 6 || day === 5 ? "Weekend" : "Jour de la semaine";
-    setDayType(newDayType);
-    calculatePrices(newDayType);
-  }
-};
+    if (specialDates[dateKey]) {
+      const { dayType, prices } = specialDates[dateKey];
+      setDayType(dayType);
+      setPrices(prices);
+    } else {
+      const newDayType = day === 0 || day === 6 || day === 5 ? "Weekend" : "Jour de la semaine";
+      setDayType(newDayType);
+      calculatePrices(newDayType);
+    }
+  };
 
-// calculatePrices prices based on THE DAY TYPE FUNC
-const calculatePrices = (dayType) => {
-  switch (dayType) {
-    case "Weekend":
-      setPrices({ night: 230, afternoon: 130 });
-      break;
-    case "Jour de la semaine":
-      setPrices({ night: 190, afternoon: 95 });
-      break;
-    case "Valentine":
-      setPrices({ night: 250, afternoon: 150 }); // Special prices for Valentine's Day
-      break;
-    case "Special Thursday": // Add support for new day types
-    case "Special Friday":
-    case "Special Saturday":
-      // No need to set prices here; specialDates handles it
-      break;
-    default:
-      setPrices({ night: 190, afternoon: 95 }); // Default to weekday prices
-  }
-};
+  // calculatePrices prices based on THE DAY TYPE FUNC
+  const calculatePrices = (dayType) => {
+    switch (dayType) {
+      case "Weekend":
+        setPrices({ night: 230, afternoon: 130 });
+        break;
+      case "Jour de la semaine":
+        setPrices({ night: 190, afternoon: 95 });
+        break;
+      case "Valentine":
+        setPrices({ night: 250, afternoon: 150 }); // Special prices for Valentine's Day
+        break;
+      case "Special Thursday": // Add support for new day types
+      case "Special Friday":
+      case "Special Saturday":
+        // No need to set prices here; specialDates handles it
+        break;
+      default:
+        setPrices({ night: 190, afternoon: 95 }); // Default to weekday prices
+    }
+  };
 
 
 
@@ -815,6 +823,46 @@ const calculatePrices = (dayType) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [stepNum]);
 
+  const validateStep1 = () => {
+    const errors = {};
+
+    // Regular expression for email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // First person validation
+    if (!name.trim()) errors.name = "Le prénom est requis";
+    if (!familyName.trim()) errors.familyName = "Le nom de famille est requis";
+    if (!email.trim()) {
+      errors.email = "L'email est requis";
+    } else if (!emailRegex.test(email)) {
+      errors.email = "Veuillez entrer un email valide";
+    }
+    if (!address.trim()) errors.address = "L'adresse est requise";
+    if (!city.trim()) errors.city = "La ville est requise";
+    if (!postalCode.trim()) errors.postalCode = "Le code postal est requis";
+    if (!phone.trim()) errors.phone = "Le téléphone est requis";
+
+    // Second person validation
+    if (!nameTwo.trim()) errors.nameTwo = "Le prénom est requis";
+    if (!familyNameTwo.trim()) errors.familyNameTwo = "Le nom de famille est requis";
+    if (!emailTwo.trim()) {
+      errors.emailTwo = "L'email est requis";
+    } else if (!emailRegex.test(emailTwo)) {
+      errors.emailTwo = "Veuillez entrer un email valide";
+    }
+    if (!addressTwo.trim()) errors.addressTwo = "L'adresse est requise";
+    if (!cityTwo.trim()) errors.cityTwo = "La ville est requise";
+    if (!postalCodeTwo.trim()) errors.postalCodeTwo = "Le code postal est requis";
+
+    setValidationErrors(errors);
+
+    // If there are errors, scroll to the top of the page
+    if (Object.keys(errors).length > 0) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    return Object.keys(errors).length === 0;
+  };
 
   return (
     <>
@@ -839,7 +887,7 @@ const calculatePrices = (dayType) => {
               <form className="active" id="form" >
                 <h3 className="main__title">Choisissez la Date et l'Heure</h3>
                 <p className="description">
-                Choisissez une date et une option (Nuit, Après-midi), puis cliquez sur "Confirmer cette date". Répétez avec "Ajouter une autre date" pour plusieurs jours.
+                  Choisissez une date et une option (Nuit, Après-midi), puis cliquez sur "Confirmer cette date". Répétez avec "Ajouter une autre date" pour plusieurs jours.
 
                 </p>
                 <ul className="list">
@@ -871,7 +919,7 @@ const calculatePrices = (dayType) => {
                   </li>
 
                   <p className="description">
-                  Choix du {startDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} 
+                    Choix du {startDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
                   </p>
 
                   {isDateSelected && (
@@ -904,13 +952,13 @@ const calculatePrices = (dayType) => {
                                     {plan === 'Nuit' ? <MdNightlightRound className="Icon-DayNight" /> : <IoIosSunny className="Icon-DayNight" />}
                                     {plan}
                                   </span>
-                                 
+
                                 </p>
                               </div>
 
                               <span className="price-amount">
-                                    {plan === 'Nuit' ? `${prices.night}€` : `${prices.afternoon}€`}
-                                  </span>
+                                {plan === 'Nuit' ? `${prices.night}€` : `${prices.afternoon}€`}
+                              </span>
                             </div>
                           ))
                         ) : (
@@ -972,13 +1020,13 @@ const calculatePrices = (dayType) => {
                                     {plan === 'Nuit' ? <MdNightlightRound className="Icon-DayNight" /> : <IoIosSunny className="Icon-DayNight" />}
                                     {plan}
                                   </span>
-                                 
+
                                 </p>
                               </div>
 
                               <span className="price-amount">
-                                    {plan === 'Nuit' ? `${prices.night}€` : `${prices.afternoon}€`}
-                                  </span>
+                                {plan === 'Nuit' ? `${prices.night}€` : `${prices.afternoon}€`}
+                              </span>
                             </div>
                           ))}
                         </div>
@@ -1002,12 +1050,14 @@ const calculatePrices = (dayType) => {
                     <div className="input__container">
                       <div className="input__labe">
                         <p className="label">Prénom</p>
-                        <p className="warning"></p>
+                        {validationErrors.name && (
+                          <p className="text-red-500 text-sm mt-1">{validationErrors.name}</p>
+                        )}
                       </div>
                       <input
                         type="text"
                         name="Nom"
-                        className="input"
+                        className={`input ${validationErrors.name ? 'border-red-500' : ''}`}
                         placeholder="e.g. King"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
@@ -1016,13 +1066,15 @@ const calculatePrices = (dayType) => {
                     </div>
                     <div className="input__container">
                       <div className="input__labe">
-                        <p className="label"> Nom de famille</p>
-                        <p className="warning"></p>
+                        <p className="label">Nom de famille</p>
+                        {validationErrors.familyName && (
+                          <p className="text-red-500 text-sm mt-1">{validationErrors.familyName}</p>
+                        )}
                       </div>
                       <input
                         type="text"
                         name="Prenom"
-                        className="input"
+                        className={`input ${validationErrors.familyName ? 'border-red-500' : ''}`}
                         placeholder="e.g. Stephen"
                         value={familyName}
                         onChange={(e) => setFamilyName(e.target.value)}
@@ -1032,13 +1084,15 @@ const calculatePrices = (dayType) => {
                   </li>
                   <li className="list__item">
                     <div className="input__labe">
-                      <p className="label">Email </p>
-                      <p className="warning"></p>
+                      <p className="label">Email</p>
+                      {validationErrors.email && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.email}</p>
+                      )}
                     </div>
                     <input
                       type="email"
                       name="email"
-                      className="input"
+                      className={`input ${validationErrors.email ? 'border-red-500' : ''}`}
                       placeholder="e.g. stephenking@lorem.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -1048,12 +1102,14 @@ const calculatePrices = (dayType) => {
                   <li className="list__item">
                     <div className="input__labe">
                       <p className="label">Address</p>
-                      <p className="warning"></p>
+                      {validationErrors.address && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.address}</p>
+                      )}
                     </div>
                     <input
                       type="text"
                       name="address"
-                      className="input"
+                      className={`input ${validationErrors.address ? 'border-red-500' : ''}`}
                       placeholder="e.g. Lyon-55-street"
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
@@ -1064,12 +1120,14 @@ const calculatePrices = (dayType) => {
                     <div className="input__container">
                       <div className="input__labe">
                         <p className="label">Ville</p>
-                        <p className="warning"></p>
+                        {validationErrors.city && (
+                          <p className="text-red-500 text-sm mt-1">{validationErrors.city}</p>
+                        )}
                       </div>
                       <input
                         type="text"
                         name="city"
-                        className="input"
+                        className={`input ${validationErrors.city ? 'border-red-500' : ''}`}
                         placeholder="e.g. Lyon"
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
@@ -1079,12 +1137,14 @@ const calculatePrices = (dayType) => {
                     <div className="input__container">
                       <div className="input__labe">
                         <p className="label">Code Postal</p>
-                        <p className="warning"></p>
+                        {validationErrors.postalCode && (
+                          <p className="text-red-500 text-sm mt-1">{validationErrors.postalCode}</p>
+                        )}
                       </div>
                       <input
                         type="text"
                         name="postalCode"
-                        className="input"
+                        className={`input ${validationErrors.postalCode ? 'border-red-500' : ''}`}
                         placeholder="e.g. 69001"
                         value={postalCode}
                         onChange={(e) => setPostalCode(e.target.value)}
@@ -1095,12 +1155,14 @@ const calculatePrices = (dayType) => {
                   <li className="list__item">
                     <div className="input__labe">
                       <p className="label">Téléphone</p>
-                      <p className="warning"></p>
+                      {validationErrors.phone && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.phone}</p>
+                      )}
                     </div>
                     <input
                       type="tel"
                       name="phone"
-                      className="input"
+                      className={`input ${validationErrors.phone ? 'border-red-500' : ''}`}
                       placeholder="e.g. +1 234 567 890"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
@@ -1108,11 +1170,12 @@ const calculatePrices = (dayType) => {
                     />
                   </li>
 
-                  {/* Upload photos for the first person */}
                   <li className="list__item">
                     <div className="input__labe">
                       <p className="label">Téléchargez votre pièce d'identité (recto et verso) pour la première personne.</p>
-                      <p className="warning"></p>
+                      {/* {validationErrors.uploadPhotosPerson1 && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.uploadPhotosPerson1}</p>
+                      )} */}
                     </div>
                     <UploadPhotos
                       uploadPhotos={uploadPhotosPerson1}
@@ -1120,18 +1183,19 @@ const calculatePrices = (dayType) => {
                     />
                   </li>
 
-
                   <br />
                   <li className="list__itemTwo">
                     <div className="input__container">
                       <div className="input__labe">
                         <p className="label">Prénom <small>(Deuxième Personne)</small></p>
-                        <p className="warning"></p>
+                        {validationErrors.nameTwo && (
+                          <p className="text-red-500 text-sm mt-1">{validationErrors.nameTwo}</p>
+                        )}
                       </div>
                       <input
                         type="text"
                         name="Nom"
-                        className="input"
+                        className={`input ${validationErrors.nameTwo ? 'border-red-500' : ''}`}
                         placeholder="e.g. King"
                         value={nameTwo}
                         onChange={(e) => setNameTwo(e.target.value)}
@@ -1141,12 +1205,14 @@ const calculatePrices = (dayType) => {
                     <div className="input__container">
                       <div className="input__labe">
                         <p className="label">Nom de famille <small>(Deuxième Personne)</small></p>
-                        <p className="warning"></p>
+                        {validationErrors.familyNameTwo && (
+                          <p className="text-red-500 text-sm mt-1">{validationErrors.familyNameTwo}</p>
+                        )}
                       </div>
                       <input
                         type="text"
                         name="Prenom"
-                        className="input"
+                        className={`input ${validationErrors.familyNameTwo ? 'border-red-500' : ''}`}
                         placeholder="e.g. Stephen"
                         value={familyNameTwo}
                         onChange={(e) => setFamilyNameTwo(e.target.value)}
@@ -1156,13 +1222,15 @@ const calculatePrices = (dayType) => {
                   </li>
                   <li className="list__item">
                     <div className="input__labe">
-                      <p className="label"> Email <small>(Deuxième Personne)</small></p>
-                      <p className="warning"></p>
+                      <p className="label">Email (Personne 2)</p>
+                      {validationErrors.emailTwo && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.emailTwo}</p>
+                      )}
                     </div>
                     <input
                       type="email"
                       name="emailTwo"
-                      className="input"
+                      className={`input ${validationErrors.emailTwo ? 'border-red-500' : ''}`}
                       placeholder="e.g. stephenking@lorem.com"
                       value={emailTwo}
                       onChange={(e) => setEmailTwo(e.target.value)}
@@ -1172,12 +1240,14 @@ const calculatePrices = (dayType) => {
                   <li className="list__item">
                     <div className="input__labe">
                       <p className="label">Adresse <small>(Deuxième Personne)</small></p>
-                      <p className="warning"></p>
+                      {validationErrors.addressTwo && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.addressTwo}</p>
+                      )}
                     </div>
                     <input
                       type="text"
                       name="addressTwo"
-                      className="input"
+                      className={`input ${validationErrors.addressTwo ? 'border-red-500' : ''}`}
                       placeholder="e.g. Lyon-55-street"
                       value={addressTwo}
                       onChange={(e) => setAddressTwo(e.target.value)}
@@ -1188,12 +1258,14 @@ const calculatePrices = (dayType) => {
                     <div className="input__container">
                       <div className="input__labe">
                         <p className="label">Ville <small>(Deuxième Personne)</small></p>
-                        <p className="warning"></p>
+                        {validationErrors.cityTwo && (
+                          <p className="text-red-500 text-sm mt-1">{validationErrors.cityTwo}</p>
+                        )}
                       </div>
                       <input
                         type="text"
                         name="cityTwo"
-                        className="input"
+                        className={`input ${validationErrors.cityTwo ? 'border-red-500' : ''}`}
                         placeholder="e.g. Lyon"
                         value={cityTwo}
                         onChange={(e) => setCityTwo(e.target.value)}
@@ -1203,12 +1275,14 @@ const calculatePrices = (dayType) => {
                     <div className="input__container">
                       <div className="input__labe">
                         <p className="label">Code Postal <small>(Deuxième Personne)</small></p>
-                        <p className="warning"></p>
+                        {validationErrors.postalCodeTwo && (
+                          <p className="text-red-500 text-sm mt-1">{validationErrors.postalCodeTwo}</p>
+                        )}
                       </div>
                       <input
                         type="text"
                         name="postalCodeTwo"
-                        className="input"
+                        className={`input ${validationErrors.postalCodeTwo ? 'border-red-500' : ''}`}
                         placeholder="e.g. 69001"
                         value={postalCodeTwo}
                         onChange={(e) => setPostalCodeTwo(e.target.value)}
@@ -1232,21 +1306,19 @@ const calculatePrices = (dayType) => {
                     />
                   </li>
 
-                  {/* Upload photos for the second person */}
                   <li className="list__item">
                     <div className="input__labe">
                       <p className="label">Téléchargez votre pièce d'identité (recto et verso) pour la deuxième personne.</p>
-                      <p className="warning"></p>
+                      {/* {validationErrors.uploadPhotosPerson2 && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.uploadPhotosPerson2}</p>
+                      )} */}
                     </div>
                     <UploadPhotos
                       uploadPhotos={uploadPhotosPerson2}
                       setUploadPhotos={setUploadPhotosPerson2}
                     />
                   </li>
-
                 </ul>
-
-
               </div>
             )}
 
@@ -1652,7 +1724,7 @@ const calculatePrices = (dayType) => {
                                     {option} <span className="text-gray-400 text-xs">({option === "Nuit" ? `${prices.night}€` : `${prices.afternoon}€`})</span>
                                     {idx < options.length - 1 ? ", " : ""}
 
-                              
+
                                   </span>
                                 ))}
                               </dd>
@@ -1812,7 +1884,7 @@ const calculatePrices = (dayType) => {
                 </button>
               )}
 
-{isBooking && stepNum === 4 && <BookingProgressModal isOpen={isBooking} />}
+              {isBooking && stepNum === 4 && <BookingProgressModal isOpen={isBooking} />}
             </div>
 
 
