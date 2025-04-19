@@ -512,6 +512,7 @@ function Form({ stripePromise }) {
     "03-06": { dayType: "Special Thursday", prices: { night: 150, afternoon: 95 } },   // Thursday, March 6
     "03-07": { dayType: "Special Friday", prices: { night: 150, afternoon: 125 } },   // Friday, March 7
     "03-08": { dayType: "Special Saturday", prices: { night: 150, afternoon: 125 } }, // Saturday, March 8
+    "04-19": { dayType: "Special April", prices: { night: 160, afternoon: 130 } },     // April 19, 2025
   };
 
   // DETERMINE THE DAY TYPE FUNC
@@ -545,6 +546,7 @@ function Form({ stripePromise }) {
       case "Special Thursday": // Add support for new day types
       case "Special Friday":
       case "Special Saturday":
+      case "Special April":
         // No need to set prices here; specialDates handles it
         break;
       default:
