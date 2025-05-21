@@ -513,6 +513,8 @@ function Form({ stripePromise }) {
     "03-07": { dayType: "Special Friday", prices: { night: 150, afternoon: 125 } },   // Friday, March 7
     "03-08": { dayType: "Special Saturday", prices: { night: 150, afternoon: 125 } }, // Saturday, March 8
     "04-19": { dayType: "Special April", prices: { night: 160, afternoon: 130 } },     // April 19, 2025
+    "05-28": { dayType: "Special May", prices: { night: 230, afternoon: 95 } },        // Wednesday, May 28
+    "06-19": { dayType: "Special June", prices: { night: 190, afternoon: 130 } },      // June 19
   };
 
   // DETERMINE THE DAY TYPE FUNC
