@@ -537,10 +537,10 @@ function Form({ stripePromise }) {
   const calculatePrices = (dayType) => {
     switch (dayType) {
       case "Weekend":
-        setPrices({ night: 230, afternoon: 130 });
+        setPrices({ night: 184, afternoon: 125 });
         break;
       case "Jour de la semaine":
-        setPrices({ night: 190, afternoon: 95 });
+        setPrices({ night: 152, afternoon: 95 });
         break;
       case "Valentine":
         setPrices({ night: 250, afternoon: 150 }); // Special prices for Valentine's Day
@@ -722,8 +722,8 @@ function Form({ stripePromise }) {
       const day = startDate.getDay();
       dayType = day === 0 || day === 5 || day === 6 ? 'Weekend' : 'Jour de la semaine';
       prices = dayType === 'Weekend'
-        ? { night: 230, afternoon: 130 }
-        : { night: 190, afternoon: 95 };
+        ? { night: 184, afternoon: 125 }
+        : { night: 152, afternoon: 95 };
     }
 
     // Check if the selected date already exists in addedDates
