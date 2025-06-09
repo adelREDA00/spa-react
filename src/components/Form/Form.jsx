@@ -514,7 +514,6 @@ function Form({ stripePromise }) {
     "03-08": { dayType: "Special Saturday", prices: { night: 150, afternoon: 125 } }, // Saturday, March 8
     "04-19": { dayType: "Special April", prices: { night: 160, afternoon: 130 } },     // April 19, 2025
     "05-28": { dayType: "Special May", prices: { night: 230, afternoon: 95 } },        // Wednesday, May 28
-    "06-19": { dayType: "Special June", prices: { night: 190, afternoon: 130 } },      // June 19
   };
 
   // DETERMINE THE DAY TYPE FUNC
@@ -537,10 +536,10 @@ function Form({ stripePromise }) {
   const calculatePrices = (dayType) => {
     switch (dayType) {
       case "Weekend":
-        setPrices({ night: 184, afternoon: 125 });
+        setPrices({ night: 230, afternoon: 125 });
         break;
       case "Jour de la semaine":
-        setPrices({ night: 152, afternoon: 95 });
+        setPrices({ night: 190, afternoon: 95 });
         break;
       case "Valentine":
         setPrices({ night: 250, afternoon: 150 }); // Special prices for Valentine's Day
@@ -722,8 +721,8 @@ function Form({ stripePromise }) {
       const day = startDate.getDay();
       dayType = day === 0 || day === 5 || day === 6 ? 'Weekend' : 'Jour de la semaine';
       prices = dayType === 'Weekend'
-        ? { night: 184, afternoon: 125 }
-        : { night: 152, afternoon: 95 };
+        ? { night: 230, afternoon: 125 }
+        : { night: 190, afternoon: 95 };
     }
 
     // Check if the selected date already exists in addedDates
