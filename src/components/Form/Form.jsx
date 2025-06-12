@@ -21,18 +21,8 @@ import { IoAdd } from "react-icons/io5";
 import { IoClose } from "react-icons/io5";
 import imageCompression from 'browser-image-compression';
 import BookingProgressModal from './BookingProgressModal';
-axios.defaults.baseURL = "https://localhost:5000";
+axios.defaults.baseURL = "/api";
 axios.defaults.withCredentials = true;
-
-const URL =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:5000"
-    : "https://spanode.onrender.com";
-
-const SERVER_URL =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:5000/uploads"
-    : "https://spanode.onrender.com/uploads";
 
 function Form({ stripePromise }) {
   const { placeId } = useParams();
@@ -272,13 +262,13 @@ function Form({ stripePromise }) {
     }
 
     try {
-      const response = await fetch(`${URL}/checkPromo`, {
+      const response = await fetch(`/api/checkPromo`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          promoCode: promoCode.trim().toUpperCase() // Normalize the code
+          promoCode: promoCode.trim().toUpperCase()
         }),
       });
 
@@ -670,7 +660,7 @@ function Form({ stripePromise }) {
 
     // Step 6: Send booking data to backend
     try {
-      const bookingResponse = await fetch(`${URL}/place/booking/${placeId}`, {
+      const bookingResponse = await fetch(`/api/place/booking/${placeId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -790,18 +780,15 @@ function Form({ stripePromise }) {
       // Fetch the client secret only when reaching the payment step
       const fetchClientSecret = async () => {
         try {
-          const response = await axios.post(`${URL}/paymentIntentStripe`, {
-            bookingFee: Math.round(total * 100), // Replace with your actual booking fee,
-            // securityDeposit: Math.round(200 * 100),
-            name: name, // Replace with the actual user's name from your state or props
-            familyName: familyName, // Replace with the actual user's family name from your state or props
-            email: email,// Replace with the actual user's email from your state or props
+          const response = await axios.post(`paymentIntentStripe`, {
+            bookingFee: Math.round(total * 100),
+            name: name,
+            familyName: familyName,
+            email: email,
             bookingId: bookingId,
-            promoApplied: promoApplied ? "true" : "false", // Note: metadata values are strings
-
+            promoApplied: promoApplied ? "true" : "false",
           });
           setBookingFeeClientSecret(response.data.bookingFeeClientSecret);
-          // setSecurityDepositClientSecret(response.data.securityDepositClientSecret);
         } catch (error) {
           console.error("Error fetching client secret:", error.response?.data?.error || error.message);
         }

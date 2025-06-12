@@ -7,6 +7,15 @@ export default defineConfig({
     server: {
         host: "127.0.0.1",
         port: 5173,
+        proxy: {
+            '/api': {
+                target: 'https://spanode.onrender.com',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/api/, ''),
+                secure: true,
+                ws: true
+            },
+        }
     },
 });
 

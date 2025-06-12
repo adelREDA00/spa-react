@@ -8,10 +8,9 @@ import { AiOutlineCreditCard } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 
-const URL_TO_UPLOADS =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:5000/uploads/"
-    : "https://spanode.onrender.com/uploads/";
+const imageUrl = process.env.NODE_ENV === 'development' 
+  ? '/api/uploads/'
+  : '/api/uploads/';
 
 function BookingPlaces() {
   // State Management
@@ -141,7 +140,7 @@ function BookingPlaces() {
                 <div className="flex max-w-full h-46 md:max-w-[320px] md:h-44 bg-gray-300 shrink-0 ">
                   <img
                     className="md:aspect-square md:w-[240px] lg:w-[280px]"
-                    src={URL_TO_UPLOADS + booking.idPhotos[0].url} 
+                    src={imageUrl + booking.idPhotos[0].url} 
                     alt={`${booking.name}`}
                   />
                 </div>
@@ -149,7 +148,7 @@ function BookingPlaces() {
                 <div className="flex max-w-full h-46 md:max-w-[320px] md:h-44 bg-gray-300 shrink-0 ">
               
                   <p  className="md:aspect-square md:w-[240px] lg:w-[280px]">
-                  ❌ Échec du téléchargement de l’image.
+                  ❌ Échec du téléchargement de l'image.
                   </p>
                 </div>
               )}

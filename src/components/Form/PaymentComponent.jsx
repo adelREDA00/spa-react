@@ -2,13 +2,6 @@ import React, { useState } from 'react';
 import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import { FaLock } from "react-icons/fa"; // For lock icon
 
-
-
-const URL =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:5000"
-    : "https://spanode.onrender.com";
-
 const PaymentComponent = ({ isLoadingStripe, messageStripe, paymentElementOptions, bookingFeeClientSecret }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -88,7 +81,7 @@ const PaymentComponent = ({ isLoadingStripe, messageStripe, paymentElementOption
             </svg>
           </label>
           <p className="text-sm text-gray-700">
-            Je reconnais qu’une caution de 200€ sera demandée lors de la remise des clés, via empreinte bancaire. Un lien vous sera envoyé. <strong>Le montant ne sera pas débité et sera libéré à la fin de la réservation</strong>, sous réserve du respect du règlement intérieur de notre établissement.
+            Je reconnais qu'une caution de 200€ sera demandée lors de la remise des clés, via empreinte bancaire. Un lien vous sera envoyé. <strong>Le montant ne sera pas débité et sera libéré à la fin de la réservation</strong>, sous réserve du respect du règlement intérieur de notre établissement.
           </p>
         </div>
 
@@ -107,7 +100,7 @@ const PaymentComponent = ({ isLoadingStripe, messageStripe, paymentElementOption
             </svg>
           </label>
           <p className="text-sm text-gray-700">
-            Je reconnais que le paiement ne sera ni remboursé ni échangeable en cas d’annulation pour quelque raison que ce soit.
+            Je reconnais que le paiement ne sera ni remboursé ni échangeable en cas d'annulation pour quelque raison que ce soit.
           </p>
         </div>
 

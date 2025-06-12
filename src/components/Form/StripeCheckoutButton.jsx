@@ -35,7 +35,7 @@ const StripeCheckoutButton = ({
       const adjustedEndDate = new Date(endDate.getTime() - endDate.getTimezoneOffset() * 60000);
 
       // Step 1: Create booking in the backend
-      const bookingResponse = await fetch(`http://localhost:5000/place/booking/${placeId}`, {
+      const bookingResponse = await fetch(`/api/place/booking/${placeId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -57,7 +57,7 @@ const StripeCheckoutButton = ({
       const formattedEndDate = format(new Date(startDate), "d MMMM yyyy", { locale: fr });
       const combinedDescription = `Réservation pour ${option} en ${dayType}, Date: ${formattedEndDate}`;
 
-      const stripeResponse = await fetch("http://localhost:5000/create-payment-intent", {
+      const stripeResponse = await fetch("/api/create-payment-intent", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

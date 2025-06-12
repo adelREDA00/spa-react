@@ -5,8 +5,6 @@ import { FaMinus } from "react-icons/fa";
 
 
 const EditModal = ({ showEditModal, updateUIAfterAPICall, updateUIAfterDelete, closeEditModal, selectedBox, apiUpdateBox, deleteBox }) => {
-    const URL = process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : "https://airbnb-clone-64cu.onrender.com";
-
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState("");

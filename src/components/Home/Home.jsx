@@ -3,10 +3,9 @@ import * as api from "../../api/requester";
 import { Link } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 
-const URL_TO_UPLOADS =
-    process.env.NODE_ENV === "development"
-        ? "http://localhost:5000/uploads/"
-        : "https://spanode.onrender.com/uploads/";
+const imageUrl = process.env.NODE_ENV === 'development' 
+  ? '/api/uploads/'
+  : '/api/uploads/';
 
 function Home() {
     const [places, setPlaces] = useState([]);
@@ -47,7 +46,7 @@ function Home() {
                             className="rounded-2xl"
                         >
                             <img
-                                src={URL_TO_UPLOADS + place.photos[0]}
+                                src={imageUrl + place.photos[0]}
                                 className="rounded-2xl object-cover aspect-square"
                                 alt=""
                             />

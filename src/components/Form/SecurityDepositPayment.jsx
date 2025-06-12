@@ -2,10 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import { FaLock } from "react-icons/fa"; // For lock icon
 
-
-
-const URL = process.env.NODE_ENV === "development" ? "http://localhost:5000" : "https://spanode.onrender.com";
-
 const SecurityDepositPayment = ({ securityDepositClientSecret, paymentElementOptions, bookingId }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -39,7 +35,7 @@ const SecurityDepositPayment = ({ securityDepositClientSecret, paymentElementOpt
 
       console.log("Security Deposit Hold Successful");
 
-      const bookingResponse = await fetch(`${URL}/updateBookingDeposit`, {
+      const bookingResponse = await fetch(`/api/updateBookingDeposit`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ securityDepositStatus: "bloqué", bookingId }),

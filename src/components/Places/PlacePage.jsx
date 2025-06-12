@@ -7,10 +7,9 @@ import { PiDotsNine } from "react-icons/pi";
 import { IoChevronBackOutline } from "react-icons/io5";
 import PlacePageDetails from "./PlacePageDetails";
 
-const URL_TO_UPLOADS =
-    process.env.NODE_ENV === "development"
-        ? "http://localhost:5000/uploads/"
-        : "https://spanode.onrender.com/uploads/";
+const imageUrl = process.env.NODE_ENV === 'development' 
+    ? '/api/uploads/'
+    : '/api/uploads/';
 
 function PlacePage() {
     const [place, setPlace] = useState([]);
@@ -55,7 +54,7 @@ function PlacePage() {
                                     className="mb-8"
                                     key={photo}
                                     src={
-                                        URL_TO_UPLOADS + photo
+                                        imageUrl + photo
                                     }
                                     alt=""
                                 />
@@ -94,7 +93,7 @@ function PlacePage() {
                                 <img
                                     className="aspect-square object-cover rounded-2xl"
                                     src={
-                                        URL_TO_UPLOADS +
+                                        imageUrl +
                                         place.photos[0]
                                     }
                                     alt=""
@@ -109,7 +108,7 @@ function PlacePage() {
                                     <img
                                         className="aspect-square object-cover rounded-2xl"
                                         src={
-                                            URL_TO_UPLOADS +
+                                            imageUrl +
                                             place.photos[1]
                                         }
                                     />
@@ -122,7 +121,7 @@ function PlacePage() {
                                     <img
                                         className="aspect-square object-cover relative bottom-2 rounded-2xl"
                                         src={
-                                            URL_TO_UPLOADS +
+                                            imageUrl +
                                             place.photos[2]
                                         }
                                     />

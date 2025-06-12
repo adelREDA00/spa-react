@@ -1,8 +1,6 @@
-const URL = process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : "https://spanode.onrender.com";
-
 export async function register(data) {
     try {
-        const response = await fetch(`${URL}/register`, {
+        const response = await fetch(`/api/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -10,15 +8,21 @@ export async function register(data) {
             body: JSON.stringify(data),
         });
 
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Registration failed');
+        }
+
         return response;
     } catch (error) {
         console.log(error);
+        throw error;
     }
 }
 
 export async function login(data) {
     try {
-        const response = await fetch(`${URL}/login`, {
+        const response = await fetch(`/api/login`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -34,14 +38,13 @@ export async function login(data) {
         return response;
     } catch (error) {
         console.log(error);
-        throw error;  // Re-throw the error to be handled by the caller
+        throw error;
     }
 }
 
-
 export async function getUser() {
     try {
-        const response = await fetch(`${URL}/profile`, {
+        const response = await fetch(`/api/profile`, {
             method: "GET",
             credentials: "include",
             headers: {
@@ -50,18 +53,20 @@ export async function getUser() {
         });
 
         if (!response.ok) {
-            throw new Error("Network response was not ok");
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to fetch user');
         }
 
         return response.json();
     } catch (error) {
         console.log(error);
+        throw error;
     }
 }
 
 export async function logout() {
     try {
-        await fetch(`${URL}/logout`, {
+        await fetch(`/api/logout`, {
             credentials: "include",
         });
     } catch (error) {}
@@ -69,7 +74,7 @@ export async function logout() {
 
 export async function uploadPhotoFromLink(data) {
     try {
-        const response = await fetch(`${URL}/upload-by-link`, {
+        const response = await fetch(`/api/upload-by-link`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -84,18 +89,17 @@ export async function uploadPhotoFromLink(data) {
 }
 
 export async function uploadPhotoFromDevice(data) {
-    const response = await fetch(`${URL}/upload`, {
+    const response = await fetch(`/api/upload`, {
         method: "POST",
         body: data,
     });
     
-    
-    return  response.json();
+    return response.json();
 }
 
 export async function createPlace(data) {
     try {
-        const response = await fetch(`${URL}/add-place`, {
+        const response = await fetch(`/api/add-place`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -110,10 +114,9 @@ export async function createPlace(data) {
     }
 }
 
-
 export async function getUserPlaces() {
     try {
-        const response = await fetch(`${URL}/user-places`, {
+        const response = await fetch(`/api/user-places`, {
             method: "GET",
             credentials: "include",
         });
@@ -125,7 +128,7 @@ export async function getUserPlaces() {
 
 export async function getPlace(id) {
     try {
-        const response = await fetch(`${URL}/place/` + id);
+        const response = await fetch(`/api/place/` + id);
         return response;
     } catch (error) {
         console.log(error);
@@ -134,7 +137,7 @@ export async function getPlace(id) {
 
 export async function updatePlace(id, data) {
     try {
-        const response = await fetch(`${URL}/place/${id}`, {
+        const response = await fetch(`/api/place/${id}`, {
             method: "PUT",
             credentials: "include",
             headers: {
@@ -149,7 +152,7 @@ export async function updatePlace(id, data) {
 
 export async function getPlaces() {
     try {
-        const response = await fetch(`${URL}/places`);
+        const response = await fetch(`/api/places`);
         return response.json();
     } catch (error) {
         console.log(error);
@@ -158,7 +161,7 @@ export async function getPlaces() {
 
 export async function getPlacesIds() {
     try {
-        const response = await fetch(`${URL}/placesIds`);
+        const response = await fetch(`/api/placesIds`);
         return response.json();
     } catch (error) {
         console.log(error);
@@ -167,7 +170,7 @@ export async function getPlacesIds() {
 
 export async function createBox(data) {
     try {
-        const response = await fetch(`${URL}/add-box`, {
+        const response = await fetch(`/api/add-box`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -184,7 +187,7 @@ export async function createBox(data) {
 
 export async function getBoxes() {
     try {
-        const response = await fetch(`${URL}/box`);
+        const response = await fetch(`/api/box`);
         return response.json();
     } catch (error) {
         console.log(error);
@@ -193,7 +196,7 @@ export async function getBoxes() {
 
 export async function updateBoxe(id, data) {
     try {
-        const response = await fetch(`${URL}/box/${id}`, {
+        const response = await fetch(`/api/box/${id}`, {
             method: "PUT",
             credentials: "include",
             headers: {
@@ -204,12 +207,11 @@ export async function updateBoxe(id, data) {
 
         return response.json();
     } catch (error) {}
-
 }
 
 export async function deletebox(id) {
     try {
-        const response = await fetch(`${URL}/box/${id}`, {
+        const response = await fetch(`/api/box/${id}`, {
             method: "DELETE",
             credentials: "include",
             headers: {
@@ -225,19 +227,16 @@ export async function deletebox(id) {
 
 export async function getOptions() {
     try {
-        const response = await fetch(`${URL}/options`);
+        const response = await fetch(`/api/options`);
         return response.json();
     } catch (error) {
         console.log(error);
     }
 }
 
-
-
-
 export async function createOption(data) {
     try {
-        const response = await fetch(`${URL}/add-option`, {
+        const response = await fetch(`/api/add-option`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -254,7 +253,7 @@ export async function createOption(data) {
 
 export async function updateOption(id, data) {
     try {
-        const response = await fetch(`${URL}/options/${id}`, {
+        const response = await fetch(`/api/options/${id}`, {
             method: "PUT",
             credentials: "include",
             headers: {
@@ -265,12 +264,11 @@ export async function updateOption(id, data) {
 
         return response.json();
     } catch (error) {}
-
 }
 
 export async function deleteOption(id) {
     try {
-        const response = await fetch(`${URL}/options/${id}`, {
+        const response = await fetch(`/api/options/${id}`, {
             method: "DELETE",
             credentials: "include",
             headers: {
@@ -284,10 +282,9 @@ export async function deleteOption(id) {
     }
 }
 
-
 export async function bookPlace(id, data) {
     try {
-        const response = await fetch(`${URL}/place/booking/${id}`, {
+        const response = await fetch(`/api/place/booking/${id}`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -304,7 +301,7 @@ export async function bookPlace(id, data) {
 
 export async function getBookings() {
     try {
-        const response = await fetch(`${URL}/account/bookings`, {
+        const response = await fetch(`/api/account/bookings`, {
             method: "GET",
             credentials: "include",
             headers: {
@@ -320,7 +317,7 @@ export async function getBookings() {
 
 export async function fetchBookedDates(placeId) {
     try {
-      const response = await fetch(`${URL}/account/dates/${placeId}`, {
+      const response = await fetch(`/api/account/dates/${placeId}`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -331,17 +328,16 @@ export async function fetchBookedDates(placeId) {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-      return data; // data will include both fullyBookedDates and bookedSlots
+      return data;
     } catch (error) {
       console.error('Error fetching booked dates:', error);
       return { fullyBookedDates: [], bookedSlots: {} };
     }
-  }
-  
+}
 
 export async function deletePlace(id) {
     try {
-        const response = await fetch(`${URL}/place/${id}`, {
+        const response = await fetch(`/api/place/${id}`, {
             method: "DELETE",
             credentials: "include",
             headers: {
@@ -357,7 +353,7 @@ export async function deletePlace(id) {
 
 export async function getBookedPlace(id) {
     try {
-        const response = await fetch(`${URL}/account/bookings/` + id, {
+        const response = await fetch(`/api/account/bookings/` + id, {
             method: "GET",
             credentials: "include",
             headers: {
@@ -373,7 +369,7 @@ export async function getBookedPlace(id) {
 
 export async function deleteBooking(id) {
     try {
-        const response = await fetch(`${URL}/account/bookings/${id}`, {
+        const response = await fetch(`/api/account/bookings/${id}`, {
             method: "DELETE",
             credentials: "include",
             headers: {

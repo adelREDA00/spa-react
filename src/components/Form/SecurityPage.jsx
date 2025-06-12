@@ -5,8 +5,6 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { useParams } from "react-router-dom";
 import SecurityDepositPayment from "./SecurityDepositPayment";
 
-const URL = process.env.NODE_ENV === "development" ? "http://localhost:5000" : "https://spanode.onrender.com";
-
 function SecurityPage({ stripePromise }) {
   const [securityDepositClientSecret, setSecurityDepositClientSecret] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -18,7 +16,7 @@ function SecurityPage({ stripePromise }) {
   
     const fetchClientSecret = async () => {
       try {
-        const response = await axios.post(`${URL}/depot-securite`, { bookingId });
+        const response = await axios.post(`depot-securite`, { bookingId });
         if (isMounted) {
           setSecurityDepositClientSecret(response.data.securityDepositClientSecret);
         }

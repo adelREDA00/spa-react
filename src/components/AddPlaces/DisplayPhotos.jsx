@@ -1,10 +1,9 @@
 import React from "react";
 
 
-const SERVER_URL =
-    process.env.NODE_ENV === "development"
-        ? "http://localhost:5000/uploads"
-        : "https://spanode.onrender.com/uploads";
+const imageUrl = process.env.NODE_ENV === 'development' 
+  ? '/api/uploads'
+  : '/api/uploads';
 
 
 function DisplayPhotos({ uploadPhotos }) {
@@ -19,7 +18,7 @@ function DisplayPhotos({ uploadPhotos }) {
                         const imageURL =
                             file instanceof File
                                 ? URL.createObjectURL(file) // Local preview for files
-                                : `${SERVER_URL}/${file}`; // Server URL for strings
+                                : `${imageUrl}/${file}`; // Server URL for strings
 
                         return (
                             <div className="flex relative w-full md:w-48" key={index}>

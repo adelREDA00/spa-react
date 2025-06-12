@@ -5,10 +5,9 @@ import * as api from "../../api/requester";
 import { TbHomePlus } from "react-icons/tb";
 import ClipLoader from "react-spinners/ClipLoader";
 
-const URL_TO_UPLOADS =
-    process.env.NODE_ENV === "development"
-        ? "http://localhost:5000/uploads/"
-        : "https://spanode.onrender.com/uploads/";
+const imageUrl = process.env.NODE_ENV === 'development' 
+  ? '/api/uploads/'
+  : '/api/uploads/';
 
 function Places() {
     const [places, setPlaces] = useState([]);
@@ -66,7 +65,7 @@ function Places() {
                                     className="object-fill aspect-auto max-h-[320px] md:aspect-square md:w-64"
                                     src={
                                         place.photos && place.photos[0]
-                                            ? URL_TO_UPLOADS + place.photos[0]
+                                            ? imageUrl + place.photos[0]
                                             : "/fallback-image.jpg" // Fallback image
                                     }
                                     alt={place.title || "Place"}
