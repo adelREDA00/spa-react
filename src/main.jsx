@@ -12,7 +12,6 @@ const stripePromise = loadStripe("pk_live_51Q1roLCzmHkB4qT7kOc0OviXrIuRYjBnhXf1k
 
 //TEST MODE
 // const stripePromise = loadStripe("pk_test_51Q1roLCzmHkB4qT7sKvfinQdaPMJhJjX1Z5St5SiNcBO3NxRGm2jdPxwQhY6i5YqTE595jBTRBX1t3uR6yYBAv5600mASOxPtu");
-// cooment secoeatpaejgpae
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
